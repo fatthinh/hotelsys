@@ -1,11 +1,10 @@
 from __init__ import db, app
-from sqlalchemy import Column, String, Integer, ForeignKey, Float, Date, Boolean, DateTime, Enum, Double, Table
+from sqlalchemy import Column, String, Integer, ForeignKey, Float, Date, Boolean, DateTime, Enum, Double, Table, BINARY
 from datetime import datetime
-from sqlalchemy.orm import relationship, DeclarativeBase
+from sqlalchemy.orm import relationship
 from enum import Enum as Enumeration
 import json
 import hashlib
-from sqlalchemy.ext.declarative import declarative_base
 
 
 class UserRole(Enumeration):
@@ -21,7 +20,7 @@ class ReservationStatus(Enumeration):
 
 class Currency(Enumeration):
     DOLLAR = 'Dollar'
-    VND = "Đồng"
+    VND = "VND"
 
 
 class Rating(Enumeration):
@@ -30,6 +29,11 @@ class Rating(Enumeration):
     GOOD = 3
     VERY_GOOD = 4
     EXCELLENT = 5
+
+
+class PaymentMethod(Enumeration):
+    BANKING = "Banking"
+    CASH = "Cash"
 
 
 class UserInfo(db.Model):
@@ -50,6 +54,7 @@ class User(UserInfo):
     address = Column(String(255))
     avatar = Column(String(255))
     role = Column(Enum(UserRole), default=UserRole.CUSTOMER)
+    active = Column(Boolean, default=True)
 
 
 class Customer(UserInfo):
@@ -77,6 +82,7 @@ class Branch(Base):
                             secondary='branch_service')
     policies = relationship('Policy', backref='branches',
                             secondary='branch_policy')
+    rooms = relationship('Room', backref='branch', lazy=True)
 
 
 class Service(Base):
@@ -103,8 +109,13 @@ branch_policy = Table('branch_policy',
                       Column('policy_id', Integer, ForeignKey(Policy.id), primary_key=True))
 
 
-class Room(Base):
-    booked = Column(Boolean, default=False)
+class AmenityType(Base):
+    amenities = relationship('Amenity', backref="type", lazy=True)
+
+
+class Amenity(Base):
+    quantity = Column(Integer, default=1)
+    amenity_type = Column(Integer, ForeignKey(AmenityType.id))
 
 
 class RoomType(Base):
@@ -117,19 +128,16 @@ class RoomType(Base):
         'Amenity', secondary='room_amenity', lazy=True, backref='rooms')
 
 
-class AmenityType(Base):
-    amenities = relationship('Amenity', backref="type", lazy=True)
-
-
-class Amenity(Base):
-    quantity = Column(Integer, default=1)
-    amenity_type = Column(Integer, ForeignKey(AmenityType.id))
+class Room(Base):
+    booked = Column(Boolean, default=False)
+    branch = Column(Integer, ForeignKey(Branch.id))
+    room_type = Column(Integer, ForeignKey(RoomType.id), nullable=False)
 
 
 room_amenity = Table('room_amenity',
                      Base.metadata,
                      Column('room_id', Integer, ForeignKey(
-                         Room.id), primary_key=True),
+                         RoomType.id), primary_key=True),
                      Column('amenity_id', Integer, ForeignKey(Amenity.id), primary_key=True))
 
 
@@ -139,64 +147,53 @@ class ClientBase(db.Model):
     created_at = Column(DateTime, default=datetime.now())
 
 
-class ReservationForm(ClientBase):
+class BookingForm(ClientBase):
     status = Column(Enum(ReservationStatus), default=ReservationStatus.DEPOSIT)
-    created_at = Column(DateTime, default=datetime.now())
+    booker = Column(Integer, ForeignKey(User.id), nullable=False)
     rooms = relationship(Room, secondary='room_reservation',
                          backref='reservations')
     customers = relationship(
         Customer, secondary='reservation_customer', backref='reservations')
-    phone = Column(String(10), nullable=False)
 
 
-class Booking(ReservationForm):
-    booker = Column(Integer, ForeignKey(User.id), nullable=False)
+class FrontDesk(db.Model):
+    id = Column(Integer, ForeignKey(BookingForm.id), primary_key=True)
+    bookerName = Column(String(100), nullable=False)
     cashier = Column(Integer, ForeignKey(User.id), nullable=False)
+    phone = Column(String(100), nullable=False)
+    email = Column(String(100), nullable=False)
 
 
-room_reservation = Table('room_reservation',
+booking_room = Table('booking_room',
+                     ClientBase.metadata,
+                     Column('room_id', Integer, ForeignKey(
+                         Room.id), primary_key=True),
+                     Column('booking_id', Integer,
+                            ForeignKey(BookingForm.id), primary_key=True),
+                     Column('check_in', Date, nullable=False),
+                     Column('check_out', Date, nullable=False))
+
+booking_customer = Table('booking_customer',
                          ClientBase.metadata,
-                         Column('room_id', Integer, ForeignKey(
-                             Room.id), primary_key=True),
-                         Column('reservation_id', Integer,
-                                ForeignKey(ReservationForm.id), primary_key=True),
-                         Column('checkIn', Date, nullable=False),
-                         Column('checkOut', Date, nullable=False))
-
-reservation_customer = Table('reservation_customer',
-                             ClientBase.metadata,
-
-                             Column('reservation_id', Integer,
-                                    ForeignKey(ReservationForm.id), primary_key=True),
-                             Column('customer_id', Integer, ForeignKey(
-                                 Customer.id), primary_key=True))
+                         Column('booking_id', Integer,
+                                ForeignKey(BookingForm.id), primary_key=True),
+                         Column('customer_id', Integer, ForeignKey(
+                             Customer.id), primary_key=True))
 
 
 class Invoice(ClientBase):
     amount = Column(Double, nullable=False)
     currency = Column(Enum(Currency), default=Currency.VND)
-    reservation = Column(Integer, ForeignKey(ReservationForm.id))
+    reservation = Column(Integer, ForeignKey(BookingForm.id), nullable=False)
+    method = Column(Enum(PaymentMethod), default=PaymentMethod.CASH)
 
 
 class Review(ClientBase):
     content = Column(String(255))
     rating = Column(Enum(Rating), nullable=False)
-    booking = Column(Integer, ForeignKey(Booking.id), nullable=False)
-    owner = Column(Integer, ForeignKey(Booking.booker), nullable=False)
+    booking = Column(Integer, ForeignKey(BookingForm.id), nullable=False)
 
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-        # with open('data/accounts.json', encoding='utf-8') as f:
-        #     accounts = json.load(f)
-        #     for account in accounts:
-        #         last_name = account['last_name']
-        #         phone = account['phone']
-        #         email = account['email']
-        #         password = account['password']
-
-        #         u = Account(last_name=last_name, phone=phone, email=email, password=str(
-        #             hashlib.md5(password.encode('utf-8')).hexdigest()))
-        #         session.add(u)
-        # db.session.commit()
