@@ -8,19 +8,19 @@ import hashlib
 
 
 class UserRole(Enumeration):
-    ADMIN = 'Admin'
-    CUSTOMER = "Customer"
-    EMPLOYEE = "Employee"
+    ADMIN = 1
+    CUSTOMER = 2
+    EMPLOYEE = 3
 
 
-class ReservationStatus(Enumeration):
-    PAID = "Paid"
-    DEPOSIT = "Deposit"
+class BookingStatus(Enumeration):
+    PAID = 1
+    DEPOSIT = 2
 
 
 class Currency(Enumeration):
-    DOLLAR = 'Dollar'
-    VND = "VND"
+    DOLLAR = 1
+    VND = 2
 
 
 class Rating(Enumeration):
@@ -32,8 +32,8 @@ class Rating(Enumeration):
 
 
 class PaymentMethod(Enumeration):
-    BANKING = "Banking"
-    CASH = "Cash"
+    BANKING = 1
+    CASH = 2
 
 
 class UserInfo(db.Model):
@@ -148,8 +148,9 @@ class ClientBase(db.Model):
 
 
 class BookingForm(ClientBase):
-    status = Column(Enum(ReservationStatus), default=ReservationStatus.DEPOSIT)
+    status = Column(Enum(BookingStatus), default=BookingStatus.DEPOSIT)
     booker = Column(Integer, ForeignKey(User.id), nullable=False)
+    notes = Column(String(50))
     rooms = relationship(Room, secondary='room_reservation',
                          backref='reservations')
     customers = relationship(
