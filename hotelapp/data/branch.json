@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Khách sạn Biển Xanh",
+    "about": "Khách sạn sang trọng bên bờ biển",
+    "address": "123 Đường ven biển, Thành phố Biển",
+    "hotline": "0912345678",
+    "email": "bienxanh@hotel.com"
+  },
+  {
+    "name": "Khách sạn Thành Phố",
+    "about": "Khách sạn tiện nghi trung tâm thành phố",
+    "address": "456 Đường trung tâm, Thành phố A",
+    "hotline": "0987654321",
+    "email": "thanhpho@hotel.com"
+  },
+  {
+    "name": "Khách sạn Núi Rừng",
+    "about": "Khách sạn nghỉ dưỡng giữa thiên nhiên",
+    "address": "789 Đường núi, Khu du lịch B",
+    "hotline": "0945678912",
+    "email": "nuirung@hotel.com"
+  }
+]
