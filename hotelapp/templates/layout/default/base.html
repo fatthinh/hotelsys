@@ -19,8 +19,13 @@
   <body>
     {% block header %} {% include 'layout/default/header.html' %} {% endblock %}
 
-    <div class="container">{% block content required %}{% endblock %}</div>
+    <main class="home">{% block content required %}{% endblock %}</main>
 
     {% block footer %} {% include 'layout/default/footer.html' %} {% endblock %}
+    {% block javascript %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}">
+    </script>
+    <!-- The contents of myscript.js will be loaded inside the script tag -->
+    {% endblock %}
   </body>
 </html>

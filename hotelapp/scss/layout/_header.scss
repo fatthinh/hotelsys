@@ -1,6 +1,19 @@
 .header {
-  position: relative;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0);
+  transition: 0.4s;
+}
+
+.header.sticky {
   background-color: var(--header-bg-color);
+}
+
+.header.sticky .top-bar {
+  padding: 14px 0;
 }
 
 .container {
@@ -36,12 +49,12 @@
   }
 
   &__icon {
-    font-size: 26px;
+    font-size: 32px;
     color: var(--icon-color);
   }
 
   &__title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
     margin-top: 8px;
   }
@@ -61,7 +74,7 @@
 
   &__link {
     position: relative;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 500;
     padding: 14px;
   }
