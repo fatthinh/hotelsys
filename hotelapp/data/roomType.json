@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Phòng Đơn Tiêu Chuẩn",
+    "price": 500000,
+    "room_size": 25.0,
+    "description": "Phòng đơn giản, đầy đủ tiện nghi cơ bản",
+    "adults": 1,
+    "children": 0
+  },
+  {
+    "name": "Phòng Đơn Cao Cấp",
+    "price": 700000,
+    "room_size": 30.0,
+    "description": "Phòng đơn rộng rãi, tiện nghi hiện đại",
+    "adults": 1,
+    "children": 0
+  },
+  {
+    "name": "Phòng Đôi Tiêu Chuẩn",
+    "price": 800000,
+    "room_size": 35.0,
+    "description": "Phòng đôi ấm cúng, đầy đủ tiện nghi",
+    "adults": 2,
+    "children": 1
+  },
+  {
+    "name": "Phòng Đôi Cao Cấp",
+    "price": 1000000,
+    "room_size": 40.0,
+    "description": "Phòng đôi sang trọng, view đẹp",
+    "adults": 2,
+    "children": 1
+  },
+  {
+    "name": "Phòng Gia Đình",
+    "price": 1500000,
+    "room_size": 55.0,
+    "description": "Phòng rộng rãi cho gia đình, có phòng khách riêng",
+    "adults": 4,
+    "children": 2
+  }
+]

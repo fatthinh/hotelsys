@@ -1,0 +1,37 @@
+[
+  {
+    "status": 2,
+    "booker": 1,
+    "notes": "Yêu cầu phòng view biển",
+    "rooms": [1, 2],
+    "customers": [1, 2]
+  },
+  {
+    "status": 1,
+    "booker": 2,
+    "notes": "Gần thang máy",
+    "rooms": [3],
+    "customers": [3]
+  },
+  {
+    "status": 2,
+    "booker": 3,
+    "notes": "Tầng cao",
+    "rooms": [4],
+    "customers": [4, 5]
+  },
+  {
+    "status": 1,
+    "booker": 1,
+    "notes": "Yên tĩnh",
+    "rooms": [6, 7],
+    "customers": [6]
+  },
+  {
+    "status": 2,
+    "booker": 2,
+    "notes": "Không hút thuốc",
+    "rooms": [8, 9],
+    "customers": [2, 3]
+  }
+]

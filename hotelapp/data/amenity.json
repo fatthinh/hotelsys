@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Bồn tắm",
+    "quantity": 1,
+    "amenity_type": 1
+  },
+  {
+    "name": "Vòi sen",
+    "quantity": 1,
+    "amenity_type": 1
+  },
+  {
+    "name": "TV",
+    "quantity": 1,
+    "amenity_type": 2
+  },
+  {
+    "name": "Tủ lạnh",
+    "quantity": 1,
+    "amenity_type": 3
+  },
+  {
+    "name": "Ấm đun nước",
+    "quantity": 1,
+    "amenity_type": 3
+  }
+]

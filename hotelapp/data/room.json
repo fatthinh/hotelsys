@@ -1,0 +1,56 @@
+[
+  {
+    "name": "101",
+    "booked": false,
+    "branch": 1,
+    "room_type": 1
+  },
+  {
+    "name": "102",
+    "booked": true,
+    "branch": 1,
+    "room_type": 2
+  },
+  {
+    "name": "103",
+    "booked": false,
+    "branch": 1,
+    "room_type": 3
+  },
+  {
+    "name": "201",
+    "booked": true,
+    "branch": 2,
+    "room_type": 4
+  },
+  {
+    "name": "202",
+    "booked": false,
+    "branch": 2,
+    "room_type": 5
+  },
+  {
+    "name": "203",
+    "booked": true,
+    "branch": 2,
+    "room_type": 2
+  },
+  {
+    "name": "301",
+    "booked": false,
+    "branch": 3,
+    "room_type": 1
+  },
+  {
+    "name": "302",
+    "booked": false,
+    "branch": 3,
+    "room_type": 3
+  },
+  {
+    "name": "303",
+    "booked": true,
+    "branch": 3,
+    "room_type": 5
+  }
+]
