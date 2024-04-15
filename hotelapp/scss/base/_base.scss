@@ -88,3 +88,14 @@ strong {
   height: 1px;
   background: var(--separate-color);
 }
+
+.book-now {
+  position: fixed;
+  transform: rotate(-90deg);
+  right: -77px;
+  width: 200px;
+  z-index: 9999999;
+  bottom: 42%;
+  color: #ffffff !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}

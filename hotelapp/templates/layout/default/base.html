@@ -19,13 +19,17 @@
   <body>
     {% block header %} {% include 'layout/default/header.html' %} {% endblock %}
 
-    <main class="home">{% block content required %}{% endblock %}</main>
+    <main class="content">{% block content required %}{% endblock %}</main>
 
     {% block footer %} {% include 'layout/default/footer.html' %} {% endblock %}
     {% block javascript %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}">
-    </script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/script.js') }}"
+    ></script>
     <!-- The contents of myscript.js will be loaded inside the script tag -->
     {% endblock %}
+
+    <!-- <a href="#booking" class="btn btn--primary book-now">BOOK NOW</a> -->
   </body>
 </html>

@@ -1,28 +1,38 @@
+@use "../abstracts";
+
 .header {
-  position: fixed;
+  position: relative;
   left: 0;
   right: 0;
   top: 0;
   z-index: 999;
-  background-color: rgba(0, 0, 0, 0);
   transition: 0.4s;
+  background-color: var(--header-bg-color);
+}
+
+.header.home__header {
+  background-color: rgba(0, 0, 0, 0);
+  padding: 6px 0;
+  position: fixed;
+
+  & .top-bar {
+    padding: 20px 0;
+  }
 }
 
 .header.sticky {
   background-color: var(--header-bg-color);
+  padding: 0;
 }
 
 .header.sticky .top-bar {
-  padding: 14px 0;
-}
-
-.container {
+  padding: 8px 0;
 }
 
 .top-bar {
   display: flex;
   align-items: center;
-  padding: 20px 0;
+  padding: 8px 0;
 
   &__more {
     display: none;
@@ -32,31 +42,16 @@
       padding: 12px;
     }
   }
-}
 
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 10px 0;
+  .logo {
+    padding: 4px 0;
 
-  @media (max-width: 767.98px) {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    translate: -70% -50%;
-  }
-
-  &__icon {
-    font-size: 32px;
-    color: var(--icon-color);
-  }
-
-  &__title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-top: 8px;
+    @include abstracts.screen(md) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      translate: -70% -50%;
+    }
   }
 }
 
@@ -74,7 +69,7 @@
 
   &__link {
     position: relative;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 500;
     padding: 14px;
   }
@@ -152,6 +147,12 @@
   display: flex;
   align-items: center;
   margin-left: auto;
+
+  a {
+    @include abstracts.screen(md) {
+      height: 38px;
+    }
+  }
 }
 
 @keyframes fadeIn {

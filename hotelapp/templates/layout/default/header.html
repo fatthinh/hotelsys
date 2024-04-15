@@ -9,21 +9,23 @@
 
       <!-- Logo -->
       <a href="#home" class="logo">
-        <i class="fa-solid fa-house logo__icon"></i>
-        <h1 class="logo__title">Booking</h1>
+        <img
+          src="{{ url_for('static', filename='icons/logo.svg') }}"
+          class="logo__img"
+        />
       </a>
 
       <!-- Navbar -->
       <nav class="navbar">
         <ul class="navbar__list d-lg-none">
           <li class="navbar__item">
-            <a href="#" class="navbar__link">navitem</a>
+            <a href="#" class="navbar__link">About us</a>
           </li>
           <li class="navbar__item">
-            <a href="#" class="navbar__link">navitem</a>
+            <a href="#" class="navbar__link">Accommodation</a>
           </li>
           <li class="navbar__item">
-            <a href="#" class="navbar__link">navitem</a>
+            <a href="#" class="navbar__link">Services</a>
           </li>
         </ul>
       </nav>
@@ -43,27 +45,22 @@
         </label>
         <ul class="navbar__mobile-list">
           <li class="navbar__mobile-item">
-            <button href="#" class="navbar__mobile-link" text>
-              navbar__mobile item
-            </button>
+            <button href="#" class="navbar__mobile-link" text>About us</button>
           </li>
           <li class="navbar__mobile-item">
             <button href="#" class="navbar__mobile-link" text>
-              navbar__mobile item
+              Accommodation
             </button>
           </li>
           <li class="navbar__mobile-item">
-            <button href="#" class="navbar__mobile-link" text>
-              navbar__mobile item
-            </button>
+            <button href="#" class="navbar__mobile-link" text>Services</button>
           </li>
         </ul>
       </nav>
 
       <!-- Actions -->
       <div class="top-actions">
-        <a href="#" class="btn btn--text d-md-none">Sign In</a>
-        <a href="#" class="btn btn--primary">Sign Up</a>
+        <a href="/login" class="btn btn--primary">Sign Up</a>
       </div>
     </div>
   </div>

@@ -32,8 +32,8 @@
 
     <div class="slideshow__content">
       <div class="caption">Welcome</div>
-      <div class="name">Booking App</div>
-      <a href="#" class="btn btn--outline">See more</a>
+      <div class="name">fatthinh hotel</div>
+      <a href="/rooms" class="btn btn--outline">See more</a>
     </div>
 
     <div class="slideshow__page">
@@ -47,12 +47,12 @@
   </div>
 </div>
 
-<div class="home__container container">
+<div class="content__container container">
   <div class="introduction row row-cols-2 row-cols-lg-1">
     <div class="left">
-      <h1>Welcome to Booking App</h1>
+      <h1>Welcome to fatthinh hotel</h1>
       <p>
-        Aquatel is located at 133 Phan Chu Trinh, Ward 2, just 3 minutes walk
+        fatthinh is located at 133 Phan Chu Trinh, Ward 2, just 3 minutes walk
         from Back Beach and more than 1km from Front Beach.
       </p>
       <p>
@@ -71,4 +71,10 @@
   </div>
 </div>
 
+{% endblock %} {% block javascript %}
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/home.js') }}"
+></script>
+<!-- The contents of myscript.js will be loaded inside the script tag -->
 {% endblock %}
