@@ -8,9 +8,9 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/rooms')
-def rooms():
-    return render_template('rooms.html')
+@app.route('/booking')
+def booking():
+    return render_template('booking.html')
 
 
 @app.route('/login')
