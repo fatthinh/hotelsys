@@ -1,0 +1,231 @@
+{% extends 'layout/default/base.html' %} {% block title %} Rooms {% endblock %}
+{% block content %}
+
+<div class="breadcrumb">
+  <div class="wrapper">
+    <div class="content">
+      <h1 style="font-size: 42px">CHECK OUT</h1>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="margin-top: 30px;">
+  <div class="checkout-container">
+    <div class="row gy-xl-3">
+      <div class="col-8 col-xl-12">
+        <div class="cart-info">
+          <h1 class="cart-info__heading">Booking information</h1>
+          <div class="cart-info__separate"></div>
+
+          <div class="booker">
+            <div class="form__row">
+              <div class="form__group">
+                <label for="name" class="form__label form__label--small"
+                  >Name</label
+                >
+                <div class="form__text-input form__text-input--small">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    placeholder="Name"
+                    class="form__input"
+                    required
+                    minlength="2"
+                  />
+                  <img
+                    src="./assets/icons/form-error.svg"
+                    alt=""
+                    class="form__input-icon-error"
+                  />
+                </div>
+                <p class="form__error">Name must be at least 2 characters</p>
+              </div>
+              <div class="form__group">
+                <label for="phone" class="form__label form__label--small"
+                  >Phone</label
+                >
+                <div class="form__text-input form__text-input--small">
+                  <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    placeholder="Phone"
+                    class="form__input"
+                    required
+                    minlength="10"
+                  />
+                  <img
+                    src="./assets/icons/form-error.svg"
+                    alt=""
+                    class="form__input-icon-error"
+                  />
+                </div>
+                <p class="form__error">Phone must be at least 10 characters</p>
+              </div>
+            </div>
+            <div class="form__group">
+              <label for="email" class="form__label form__label--small"
+                >Email</label
+              >
+              <div class="form__text-input form__text-input--small">
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Email"
+                  class="form__input"
+                  required
+                  minlength="2"
+                />
+              </div>
+              <p class="form__error">Example: thinh@gmail.com</p>
+            </div>
+            <div class="form__group">
+              <label for="notes" class="form__label form__label--small"
+                >Notes</label
+              >
+              <div class="form__text-area">
+                <textarea
+                  name="notes"
+                  id="notes"
+                  placeholder="Note your requirements"
+                  class="form__text-area-input"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="cart-info__separate"></div>
+
+          <h2 class="cart-info__sub-heading">Guests</h2>
+
+          <ul class="passenger-list">
+            <li class="passenger-item">
+              <div class="form__row">
+                <div class="form__group">
+                  <div class="form__text-input form__text-input--small">
+                    <input
+                      type="text"
+                      name=""
+                      placeholder="Name"
+                      id="passenger"
+                      class="form__input"
+                    />
+                  </div>
+                  <p class="form__error">
+                    Phone must be at least 11 characters
+                  </p>
+                </div>
+
+                <div class="form__group">
+                  <div class="form__text-input form__text-input--small">
+                    <input
+                      type="date"
+                      name=""
+                      id="passenger-dob"
+                      class="form__input"
+                    />
+                  </div>
+                </div>
+
+                <div class="form__group" style="flex: 0.2">
+                  <button
+                    class="btn btn--small btn--danger js-remove-passenger"
+                  >
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="form__group"">
+            <button
+              class="btn btn--small btn--primary js-more-passenger"
+              style="width: 100%"
+            >
+              More passenger
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 col-xl-12">
+        <div class="cart-info">
+          <div class="cart-info__row">
+            <span
+              >Subtotal <span class="cart-info__sub-label">(items)</span></span
+            >
+            <span>3</span>
+          </div>
+          <div class="cart-info__row">
+            <span>Price <span class="cart-info__sub-label">(Total)</span></span>
+            <span>$191.65</span>
+          </div>
+          <div class="cart-info__row">
+            <span>Shipping</span>
+            <span>$10.00</span>
+          </div>
+          <div class="cart-info__separate"></div>
+          <div class="cart-info__row">
+            <span>Estimated Total</span>
+            <span>$201.65</span>
+          </div>
+          <a
+            href="./payment.html"
+            class="cart-info__next-btn btn btn--primary btn--rounded"
+          >
+            Continue to checkout
+          </a>
+        </div>
+        <div class="cart-info">
+            <h2 class="cart-info__sub-heading">Items details</h2>
+            <div class="cart-info__list">
+              <!-- Cart item 1 -->
+              <article class="cart-item">
+                <a href="/" class="cart-item__img">
+                  <img
+                    src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404014/samples/chair-and-coffee-table.jpg"
+                    class="cart-item__thumb"
+                    alt=""
+                  />
+                </a>
+                <div class="cart-item__info">
+                  <div class="cart-item__info-left">
+                    <h3 class="cart-item__title">
+                      <a href="/"> Deluxe </a>
+                    </h3>
+                    <p class="cart-item__price-wrap">Capacity: 5 persons</p>
+                    <div class="cart-item__ctrl cart-item__ctrl--md-block">
+                      <div class="cart-item__input">
+                        <button class="cart-item__input-btn">
+                          <i class="fa-regular fa-square-minus"></i>
+                        </button>
+                        <span>1</span>
+                        <button class="cart-item__input-btn">
+                          <i class="fa-regular fa-square-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cart-item__info-right">
+                    <p class="cart-item__total-price">$47.00</p>
+                    <div class="cart-item__ctrl">
+                      <button
+                        class="cart-item__ctrl-btn js-toggle"
+                        toggle-target="#delete-confirm"
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

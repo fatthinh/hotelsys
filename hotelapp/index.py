@@ -1,6 +1,7 @@
 from __init__ import app
 from flask import render_template
 from admin import admin
+import dao
 
 
 @app.route('/')
@@ -10,7 +11,14 @@ def index():
 
 @app.route('/booking')
 def booking():
-    return render_template('booking.html')
+    rooms = dao.load_rooms()
+    print(rooms)
+    return render_template('booking.html', rooms=rooms)
+
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
 
 
 @app.route('/login')

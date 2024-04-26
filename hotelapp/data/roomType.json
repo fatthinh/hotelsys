@@ -1,42 +1,82 @@
 [
   {
-    "name": "Phòng Đơn Tiêu Chuẩn",
-    "price": 500000,
-    "room_size": 25.0,
-    "description": "Phòng đơn giản, đầy đủ tiện nghi cơ bản",
+    "name": "Standard Single Room",
+    "price": 10,
+    "room_size": 30,
+    "description": "A cozy single room with basic amenities.",
     "adults": 1,
     "children": 0
   },
   {
-    "name": "Phòng Đơn Cao Cấp",
-    "price": 700000,
-    "room_size": 30.0,
-    "description": "Phòng đơn rộng rãi, tiện nghi hiện đại",
-    "adults": 1,
+    "name": "Standard Double Room",
+    "price": 15,
+    "room_size": 30,
+    "description": "A comfortable double room suitable for couples.",
+    "adults": 2,
     "children": 0
   },
   {
-    "name": "Phòng Đôi Tiêu Chuẩn",
-    "price": 800000,
-    "room_size": 35.0,
-    "description": "Phòng đôi ấm cúng, đầy đủ tiện nghi",
+    "name": "Deluxe Suite",
+    "price": 25,
+    "room_size": 30,
+    "description": "An elegant suite with a separate living area and luxurious amenities.",
     "adults": 2,
     "children": 1
   },
   {
-    "name": "Phòng Đôi Cao Cấp",
-    "price": 1000000,
-    "room_size": 40.0,
-    "description": "Phòng đôi sang trọng, view đẹp",
+    "name": "Family Room",
+    "price": 20,
+    "room_size": 30,
+    "description": "Spacious room suitable for families with children, featuring extra bedding options.",
     "adults": 2,
-    "children": 1
-  },
-  {
-    "name": "Phòng Gia Đình",
-    "price": 1500000,
-    "room_size": 55.0,
-    "description": "Phòng rộng rãi cho gia đình, có phòng khách riêng",
-    "adults": 4,
     "children": 2
+  },
+  {
+    "name": "Executive Room",
+    "price": 18,
+    "room_size": 30,
+    "description": "Well-appointed room with additional amenities for business travelers.",
+    "adults": 1,
+    "children": 0
+  },
+  {
+    "name": "Penthouse Suite",
+    "price": 50,
+    "room_size": 30,
+    "description": "Luxurious suite located on the top floor with panoramic views and premium services.",
+    "adults": 2,
+    "children": 0
+  },
+  {
+    "name": "Junior Suite",
+    "price": 30,
+    "room_size": 30,
+    "description": "A stylish suite with a comfortable seating area and modern furnishings.",
+    "adults": 2,
+    "children": 0
+  },
+  {
+    "name": "Standard Twin Room",
+    "price": 16,
+    "room_size": 30,
+    "description": "Room with two single beds, ideal for friends or colleagues traveling together.",
+    "adults": 2,
+    "children": 0
+  },
+  {
+    "name": "Accessible Room",
+    "price": 12,
+    "room_size": 30,
+    "description": "Wheelchair-accessible room with specially designed amenities for guests with mobility needs.",
+    "adults": 1,
+    "children": 0
+  },
+  {
+    "name": "Honeymoon Suite",
+    "price": 40,
+    "room_size": 30,
+    "description": "Romantic suite designed for honeymooners, featuring a jacuzzi and intimate atmosphere.",
+    "adults": 2,
+    "children": 0
   }
 ]

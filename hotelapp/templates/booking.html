@@ -1,6 +1,209 @@
 {% extends 'layout/default/base.html' %} {% block title %} Rooms {% endblock %}
 {% block content %}
 
-<h1 style="height: 200vh">booking</h1>
+<div class="breadcrumb">
+  <div class="wrapper">
+    <div class="content">
+      <h1 style="font-size: 42px">OUR ROOMS</h1>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="margin-top: 30px">
+  <div class="row">
+    <div class="col-8">
+      {% for room in rooms %}
+      <div class="room-item">
+        <a href="#">
+          <div class="room-thumbnail">
+            <img
+              src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404015/samples/cup-on-a-table.jpg"
+              alt="room image"
+            />
+          </div>
+          <div class="room-content">
+            <h2>{{room.name}}</h2>
+            <h4>{{room.price}}$ <span>/ Day</span></h4>
+            <div class="room-feature">
+              <h6>Size: <span>{{room.room_size}} ft</span></h6>
+              <h6>Capacity: <span>Max persion {{room.adults}}</span></h6>
+              <h6>Bed: <span>King beds</span></h6>
+              <h6>Services: <span>Wifi, television ...</span></h6>
+            </div>
+            <div class="room-actions">
+              <a href="/" class="btn btn--primary">Add To Cart</a>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="col-4 check-available">
+      <form action="" class="form">
+        <div class="form__group">
+          <label for="name" class="form__label form__label--small">
+            Date
+          </label>
+        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <div class="form__text-input form__text-input--small">
+              <input
+                type="date"
+                name="check-in"
+                id="check-in"
+                class="form__input"
+              />
+            </div>
+          </div>
+          <div class="form__group">
+            <div class="form__text-input form__text-input--small">
+              <input
+                type="date"
+                name="check-out"
+                id="check-out"
+                placeholder="Check out"
+                class="form__input"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form__row">
+          <div class="form__group">
+            <label for="adults" class="form__label form__label--small"
+              >Adults</label
+            >
+            <div class="form__text-input form__text-input--small">
+              <input
+                type="number"
+                name="adults"
+                id="adults"
+                class="form__input"
+                min="1"
+                value="1"
+              />
+            </div>
+          </div>
+          <div class="form__group">
+            <label for="children" class="form__label form__label--small"
+              >Children</label
+            >
+            <div class="form__text-input form__text-input--small">
+              <input
+                type="number"
+                name="children"
+                id="children"
+                class="form__input"
+                min="0"
+                value="0"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form__row form__group">
+          <button
+            class="btn"
+            style="background-color: rgba(85, 85, 230, 0.842)"
+          >
+            Check Available
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="fixed-cart">
+  <a class="cart-icon js-toggle" toggle-target="#cart"
+    ><i class="fa-solid fa-basket-shopping"></i>
+  </a>
+  <span class="badge badge-warning" id="lblCartCount"> 5 </span>
+</div>
+
+<!-- Modal: address new shipping address -->
+<div id="cart" class="modal modal--large hide">
+  <div class="modal__content">
+    <form action="" class="form">
+      <div class="modal__bottom" style="margin-top: 0">
+        <button
+          class="btn btn--small btn--text modal__btn js-toggle"
+          toggle-target="#cart"
+        >
+          <i class="fa-solid fa-x"></i>
+        </button>
+      </div>
+      <h2 class="modal__heading">Booking Infomation</h2>
+      <div class="modal__body row gx-4">
+        <div class="content-left col-8">
+          <div class="cart-list">
+            <article class="cart-item">
+              <a href="/" class="cart-item__img">
+                <img
+                  src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404014/samples/chair-and-coffee-table.jpg"
+                  class="cart-item__thumb"
+                  alt=""
+                />
+              </a>
+              <div class="cart-item__info">
+                <div class="cart-item__info-left">
+                  <h3 class="cart-item__title">
+                    <a href="/"> Deluxe </a>
+                  </h3>
+                  <p class="cart-item__price-wrap">Capacity: 5 persons</p>
+                  <div class="cart-item__ctrl cart-item__ctrl--md-block">
+                    <div class="cart-item__input">
+                      <button class="cart-item__input-btn">
+                        <i class="fa-regular fa-square-minus"></i>
+                      </button>
+                      <span>1</span>
+                      <button class="cart-item__input-btn">
+                        <i class="fa-regular fa-square-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="cart-item__info-right">
+                  <p class="cart-item__total-price">$47.00</p>
+                  <div class="cart-item__ctrl">
+                    <button
+                      class="cart-item__ctrl-btn js-toggle"
+                      toggle-target="#delete-confirm"
+                    >
+                      <i class="fa-solid fa-trash"></i>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div
+          class="content-right col-4 cart-info"
+          style="
+            box-shadow: -19px 32px 73px -3px rgba(177, 175, 175, 0.55);
+            min-height: 320px;
+          "
+        >
+          <div class="cart-info__row"><span>Check In:</span> 19/08/2024</div>
+          <div class="cart-info__row"><span>Check Out:</span> 21/08/2024</div>
+          <div class="cart-info__separate"></div>
+          <div class="cart-info__row">
+            <span>Estimated Total</span>
+            <span>$201.65</span>
+          </div>
+          <a
+            href="/checkout"
+            class="cart-info__next-btn btn btn--primary btn--rounded"
+          >
+            Continue to checkout
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal__overlay"></div>
+</div>
 
 {% endblock %}

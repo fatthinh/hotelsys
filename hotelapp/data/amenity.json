@@ -1,27 +1,102 @@
 [
   {
-    "name": "Bồn tắm",
-    "quantity": 1,
-    "amenity_type": 1
+    "name": "Shampoo",
+    "description": "Complimentary shampoo provided for guests."
   },
   {
-    "name": "Vòi sen",
-    "quantity": 1,
-    "amenity_type": 1
+    "name": "Lotion",
+    "description": "Complimentary lotion provided for guests."
   },
   {
-    "name": "TV",
-    "quantity": 1,
-    "amenity_type": 2
+    "name": "Soap",
+    "description": "Complimentary soap provided for guests."
   },
   {
-    "name": "Tủ lạnh",
-    "quantity": 1,
-    "amenity_type": 3
+    "name": "Conditioner",
+    "description": "Complimentary conditioner provided for guests."
   },
   {
-    "name": "Ấm đun nước",
-    "quantity": 1,
-    "amenity_type": 3
+    "name": "Toothpaste",
+    "description": "Complimentary toothpaste provided for guests."
+  },
+  {
+    "name": "Toothbrush",
+    "description": "Complimentary toothbrush provided for guests."
+  },
+  {
+    "name": "Shower Gel",
+    "description": "Complimentary shower gel provided for guests."
+  },
+  {
+    "name": "Comb",
+    "description": "Complimentary comb provided for guests."
+  },
+  {
+    "name": "Shaving Cream",
+    "description": "Complimentary shaving cream provided for guests."
+  },
+  {
+    "name": "Razor",
+    "description": "Complimentary razor provided for guests."
+  },
+  {
+    "name": "Shower Cap",
+    "description": "Complimentary shower cap provided for guests."
+  },
+  {
+    "name": "Hair Dryer",
+    "description": "Hair dryer available in each room for guests' convenience."
+  },
+  {
+    "name": "Coffee Maker",
+    "description": "In-room coffee maker provided for guests to brew their own coffee."
+  },
+  {
+    "name": "Coffee",
+    "description": "Complimentary coffee packets provided for guests."
+  },
+  {
+    "name": "Creamer",
+    "description": "Complimentary creamer packets provided for guests."
+  },
+  {
+    "name": "Bathrobe",
+    "description": "Complimentary bathrobe provided for guests."
+  },
+  {
+    "name": "Slippers",
+    "description": "Complimentary slippers provided for guests."
+  },
+  {
+    "name": "Free Breakfast",
+    "description": "Complimentary breakfast provided for guests, offering options for both continental buffet and sit-down hot meals."
+  },
+  {
+    "name": "Down Pillow",
+    "description": "Soft and fluffy down pillow, ideal for guests who prefer a plush feel."
+  },
+  {
+    "name": "Foam Pillow",
+    "description": "Supportive foam pillow, perfect for guests who prefer firmer support."
+  },
+  {
+    "name": "Hypoallergenic Pillow",
+    "description": "Pillow designed for guests with allergies, providing a comfortable and allergen-free sleep experience."
+  },
+  {
+    "name": "Free WiFi",
+    "description": "Complimentary WiFi internet access available throughout the hotel, allowing guests to stay connected without additional charges."
+  },
+  {
+    "name": "Free Parking",
+    "description": "Complimentary parking available for guests, eliminating the need for additional parking fees."
+  },
+  {
+    "name": "Premium Coffee",
+    "description": "Elevated in-room coffee experience featuring freshly ground beans from a local roaster or Nespresso machine."
+  },
+  {
+    "name": "Premium Coffee",
+    "description": "Elevated in-room coffee experience featuring freshly ground beans from a local roaster or Nespresso machine."
   }
 ]
