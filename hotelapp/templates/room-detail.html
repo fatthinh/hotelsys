@@ -1,0 +1,128 @@
+{% extends 'layout/default/base.html' %} {% block title %} Rooms {% endblock %}
+{% block content %}
+    <div class="breadcrumb">
+        <div class="wrapper">
+            <div class="content">
+                <h1 style="font-size: 42px">{{ room.room_type.name }}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="room-detail">
+        <img src="https://admin.bluejayhotelsystem.com/Uploads/4354/e87f856f-854f-4939-9a86-1e39e1c6bc84.jpg"
+             width="500"
+             alt="room-img"/>
+
+        <div class="room-info">
+            <div class="title">
+                <strong>More info</strong>
+            </div>
+            <div class="description">
+                Room Size {{ room.room_type.room_size }} m².<br>
+                {{ room.room_type.description }}
+            </div>
+        </div>
+
+        <div class="room-info">
+            <div class="title">
+                <strong>People Available</strong>
+            </div>
+            <div class="description">
+                {{ room.room_type.adults }} Adults, {{ room.room_type.children }} Children
+            </div>
+        </div>
+
+{#        <div class="room-info">#}
+{#            <div class="title">#}
+{#                <strong>Bed room</strong>#}
+{#            </div>#}
+{#            <div class="description">#}
+{#                Bed room 1 : 2 Queen Bed(s), 1 Sofa Bed(s)#}
+{#            </div>#}
+{#        </div>#}
+
+        <div class="room-info">
+            <div class="title">
+                <strong>Room Amenities</strong>
+            </div>
+            <div class="description">
+                <ul style="margin:0px; padding:0px;">
+                    {% for a in room.amenities %}
+                        <li class="list-inline-item">
+                            <strong>{{ a.quantity }} {{ a.name }}</strong>: {{ a.description }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .room-detail {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 65%;
+            padding: 20px;
+            margin: 60px auto 0;
+        }
+
+        .room-detail img {
+            border-radius: 10px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .room-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 10px 0;
+            width: 100%;
+            border-bottom: 1px solid #eee;
+        }
+
+        .room-info:last-child {
+            border-bottom: none;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+            flex: 0 0 25%;
+        }
+
+        .description {
+            margin-left: 20px;
+            font-size: 16px;
+            color: #555;
+            flex: 1;
+        }
+
+        .description ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .description ul li {
+            margin-bottom: 8px;
+        }
+
+        .description ul li strong {
+            font-weight: 500;
+        }
+
+        .list-inline-item {
+            display: inline-block;
+            margin-right: 15px;
+        }
+    </style>
+{% endblock %}

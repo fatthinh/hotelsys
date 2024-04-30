@@ -1,0 +1,17 @@
+[
+  {
+    "amenity": 1,
+    "quantity": 1,
+    "room": 1
+  },
+  {
+    "amenity": 2,
+    "quantity": 1,
+    "room": 1
+  },
+  {
+    "amenity": 13,
+    "quantity": 1,
+    "room": 1
+  }
+]
