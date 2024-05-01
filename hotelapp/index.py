@@ -71,19 +71,27 @@ def get_cart():
 def add_to_cart():
     cart = session.get('cart')
     if not cart:
-        cart = {}
+        cart = {
+            "check_in": request.json.get("checkIn"),
+            "check_out": request.json.get("checkOut"),
+            'items': []
+        }
 
     id = str(request.json.get('id'))
 
-    if id in cart:
-        cart[id]['quantity'] += 1
+    room = dao.get_room_type_by_id(id)
+
+    if any(item['id'] == id for item in cart['items']):
+        [item.update({'quantity': item['quantity'] + 1})
+         for item in cart['items']
+         if item['id'] == id and
+         item['quantity'] < len(room.check_available(cart['check_in'], cart['check_out']))]
     else:
-        cart[id] = {
-            'id': id,
-            'quantity': 1,
-        }
+        cart['items'].append({"id": id, "quantity": 1})
 
     session['cart'] = cart
+
+    print(cart)
 
     return jsonify(utils.get_cart_total(cart))
 
@@ -91,8 +99,9 @@ def add_to_cart():
 @app.route('/api/cart/<room_id>', methods=['delete'])
 def delete_cart_item(room_id):
     cart = session.get('cart')
-    if cart and room_id in cart:
-        del cart[room_id]
+
+    if cart:
+        cart['items'] = [item for item in cart['items'] if item['id'] != room_id]
         session['cart'] = cart
 
     return jsonify(utils.get_cart_total(cart))
@@ -101,12 +110,16 @@ def delete_cart_item(room_id):
 @app.route('/api/cart/<room_id>', methods=['put'])
 def update_cart_item(room_id):
     cart = session.get('cart')
-    if cart and room_id in cart:
+    if cart:
         quantity = int(request.json.get("quantity", 0))
         if (quantity == 0):
-            cart[room_id]['quantity'] = 1
+            [item.update({'quantity': 1})
+             for item in cart['items'] if item['id'] == room_id]
         else:
-            cart[room_id]['quantity'] = quantity
+            room = dao.get_room_type_by_id(room_id)
+            [item.update({'quantity': quantity})
+             for item in cart['items'] if item['id'] == room_id and
+             quantity <= len(room.check_available(cart['check_in'], cart['check_out']))]
 
         session['cart'] = cart
 

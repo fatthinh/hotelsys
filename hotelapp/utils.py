@@ -23,13 +23,13 @@ def get_cart_total(cart):
     total_amount, total_quantity = 0, 0
 
     if cart:
-        for item in cart.values():
+        for item in cart['items']:
             room = dao.get_room_type_by_id(item['id'])
             total_amount += item["quantity"] * room.price
             total_quantity += item["quantity"]
 
     return {
-        'items': [item for item in session.get("cart").values()],
+        'items': cart['items'],
         'total_amount': total_amount,
         'total_quantity': total_quantity
     }

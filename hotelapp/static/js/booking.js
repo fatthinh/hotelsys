@@ -14,6 +14,8 @@ addToCartButtons.forEach((item) => {
       method: "post",
       body: JSON.stringify({
         id: item.closest(".room-item").dataset.id,
+        checkIn: checkIn.value,
+        checkOut: checkOut.value,
       }),
 
       headers: {
