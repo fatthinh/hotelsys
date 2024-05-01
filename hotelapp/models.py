@@ -248,6 +248,14 @@ def insert_data(db, obj, fileName):
     db.session.commit()
 
 
+def insert_amenity_room():
+    with open(f'data/amenity-room.json', encoding='utf-8') as f:
+        items = json.load(f)
+        for item in items:
+            db.session.add(AmenityRoom(**item))
+    db.session.commit()
+
+
 if __name__ == "__main__":
     with app.app_context():
         # db.create_all()
@@ -274,5 +282,6 @@ if __name__ == "__main__":
         # insert_data(db, Room, "room")
         # insert_data(db, Guest, "guest")
         insert_data(db, Booking, "booking")
+        insert_amenity_room()
 
         # clear_data(db)

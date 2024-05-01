@@ -118,6 +118,13 @@ def load_user(user_id):
     return dao.get_user_by_id(user_id)
 
 
+@app.route('/room-detail/<room_id>', methods=['get'])
+def room_detail(room_id):
+    room = dao.load_room_detail(room_id)
+    print(room)
+    return render_template('room-detail.html', room=room)
+
+
 if __name__ == "__main__":
     with app.app_context():
         app.run(debug=True)
