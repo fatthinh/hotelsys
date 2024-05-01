@@ -1,11 +1,12 @@
 from __init__ import db, app
 from sqlalchemy import Column, String, Integer, ForeignKey, Float, Date, Boolean, DateTime, Enum, Double, Table, BINARY, Text
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.orm import relationship
 from enum import Enum as Enumeration
 import json
 import hashlib
 from flask_login import UserMixin
+from utils import string_to_date
 
 
 class UserStatus(Enumeration):
@@ -54,7 +55,7 @@ class User(Person, UserMixin):
 
 
 class Guest(Person):
-    isVietnamese = Column(Boolean, default=True)
+    is_vietnamese = Column(Boolean, default=True)
 
 
 class ServiceStaff(Person):
@@ -75,6 +76,28 @@ class RoomType(db.Model):
     adults = Column(Integer, nullable=False,  default=2)
     children = Column(Integer, default=1)
     price = Column(Double, nullable=False)
+    rooms = relationship("Room", lazy=True)
+
+    def check_available(self, check_in, check_out):
+
+        rooms = []
+
+        if check_in and check_out:
+            check_in = string_to_date(check_in)
+            check_out = string_to_date(check_out)
+
+            for room in self.rooms:
+                bookings = [booking for booking in room.bookings if booking.created_at >=
+                            datetime.now() - timedelta(days=30)]
+
+                available = True
+                for booking in bookings:
+                    if not ((check_in < booking.check_in and check_out < booking.check_in) or check_in > booking.check_out):
+                        available = False
+                if available:
+                    rooms.append(room)
+
+        return rooms
 
 
 class BaseAmenity(db.Model):
@@ -93,6 +116,9 @@ class Room(db.Model):
     name = Column(String(50), nullable=False, unique=True)
     status = Column(Enum(RoomStatus), default=RoomStatus.AVAILABLE)
     room_type = Column(Integer, ForeignKey(RoomType.id), nullable=False)
+
+    def check_available(self):
+        return self.bookings
 
 
 class Requirement (BaseAmenity):
@@ -226,7 +252,27 @@ if __name__ == "__main__":
     with app.app_context():
         # db.create_all()
 
-        insert_data(db, Amenity, "amenity")
-        insert_data(db, RoomType, "roomType")
+        # insert_data(db, Amenity, "amenity")
+        # insert_data(db, RoomType, "roomType")
+
+        # with open(f'data/users.json', encoding='utf-8') as f:
+        #     items = json.load(f)
+        #     for item in items:
+        #         first_name = item['first_name']
+        #         last_name = item['last_name']
+        #         address = item['address']
+        #         identity_num = item['identity_num']
+        #         phone = item['phone']
+        #         email = item['email']
+        #         password = str(hashlib.md5(
+        #             item['password'].encode('utf-8')).hexdigest())
+
+        #         db.session.add(User(first_name=first_name, last_name=last_name, address=address,
+        #                             identity_num=identity_num, phone=phone, email=email, password=password))
+        #     db.session.commit()
+
+        # insert_data(db, Room, "room")
+        # insert_data(db, Guest, "guest")
+        insert_data(db, Booking, "booking")
 
         # clear_data(db)

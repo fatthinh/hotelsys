@@ -15,6 +15,11 @@
       src="https://kit.fontawesome.com/d4881d7d22.js"
       crossorigin="anonymous"
     ></script>
+
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/script.js') }}"
+    ></script>
   </head>
   <body>
     {% block header %} {% include 'layout/default/header.html' %} {% endblock %}
@@ -23,13 +28,24 @@
 
     {% block footer %} {% include 'layout/default/footer.html' %} {% endblock %}
     {% block javascript %}
-    <script
-      type="text/javascript"
-      src="{{ url_for('static', filename='js/script.js') }}"
-    ></script>
-    <!-- The contents of myscript.js will be loaded inside the script tag -->
+    <!-- The contents of .js will be loaded inside the script tag -->
     {% endblock %}
 
     <a href="/booking" class="btn btn--primary book-now">BOOK NOW</a>
+    <script>
+      const bookNowBtn = $(".book-now");
+      if (document.title === "Rooms") bookNowBtn.classList.add("hide");
+    </script>
+
+    <!-- Modal: loader -->
+    <div id="loader" class="modal hide">
+      <div
+        class="modal__content"
+        style="background: transparent; width: unset; padding: 0"
+      >
+        <div class="loader"></div>
+      </div>
+      <div class="modal__overlay js-toggle" toggle-target="#loader"></div>
+    </div>
   </body>
 </html>

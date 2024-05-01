@@ -44,7 +44,7 @@
         </form>
       </div>
       <div class="form-container sign-in">
-        <form>
+        <form method="post">
           <a href="/" class="logo">
             <img
               src="{{ url_for('static', filename='icons/logo.svg') }}"
@@ -63,8 +63,8 @@
             ></a>
           </div>
           <span>or use your email password</span>
-          <input type="email" placeholder="Email" />
-          <input type="password" placeholder="Password" />
+          <input type="email" name="email" placeholder="Email" />
+          <input type="password" name="password" placeholder="Password" />
           <a href="#">Forget Your Password?</a>
           <button>Sign In</button>
         </form>

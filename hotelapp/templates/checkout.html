@@ -9,7 +9,7 @@
   </div>
 </div>
 
-<div class="container" style="margin-top: 30px;">
+<div class="container" style="margin-top: 30px">
   <div class="checkout-container">
     <div class="row gy-xl-3">
       <div class="col-8 col-xl-12">
@@ -33,11 +33,6 @@
                     required
                     minlength="2"
                   />
-                  <img
-                    src="./assets/icons/form-error.svg"
-                    alt=""
-                    class="form__input-icon-error"
-                  />
                 </div>
                 <p class="form__error">Name must be at least 2 characters</p>
               </div>
@@ -54,11 +49,6 @@
                     class="form__input"
                     required
                     minlength="10"
-                  />
-                  <img
-                    src="./assets/icons/form-error.svg"
-                    alt=""
-                    class="form__input-icon-error"
                   />
                 </div>
                 <p class="form__error">Phone must be at least 10 characters</p>
@@ -101,7 +91,7 @@
           <h2 class="cart-info__sub-heading">Guests</h2>
 
           <ul class="passenger-list">
-            <li class="passenger-item">
+            <li class="passenger-item" data-id="1">
               <div class="form__row">
                 <div class="form__group">
                   <div class="form__text-input form__text-input--small">
@@ -121,12 +111,29 @@
                 <div class="form__group">
                   <div class="form__text-input form__text-input--small">
                     <input
-                      type="date"
+                      type="text"
                       name=""
-                      id="passenger-dob"
+                      placeholder="Identity number"
+                      id="passenger-id"
                       class="form__input"
+                      pattern="[0-9]{12}"
+                      maxlength="12"
+                      required
                     />
                   </div>
+                </div>
+
+                <div class="form__group form__group--inline" style="flex: 0.4">
+                  <label class="form__checkbox">
+                    <input
+                      type="checkbox"
+                      name=""
+                      id=""
+                      class="form__checkbox-input d-none"
+                      checked
+                    />
+                    <span class="form__checkbox-label">Vietnamese</span>
+                  </label>
                 </div>
 
                 <div class="form__group" style="flex: 0.2">
@@ -140,7 +147,7 @@
             </li>
           </ul>
 
-          <div class="form__group"">
+          <div class="form__group">
             <button
               class="btn btn--small btn--primary js-more-passenger"
               style="width: 100%"
@@ -154,17 +161,17 @@
         <div class="cart-info">
           <div class="cart-info__row">
             <span
-              >Subtotal <span class="cart-info__sub-label">(items)</span></span
+              >Subtotal <span class="cart-info__sub-label">(Rooms)</span></span
             >
-            <span>3</span>
+            <span class="total-rooms"></span>
           </div>
           <div class="cart-info__row">
             <span>Price <span class="cart-info__sub-label">(Total)</span></span>
-            <span>$191.65</span>
+            <span class="total-amount"></span>
           </div>
           <div class="cart-info__row">
-            <span>Shipping</span>
-            <span>$10.00</span>
+            <span>Surcharge</span>
+            <span class="surcharge"></span>
           </div>
           <div class="cart-info__separate"></div>
           <div class="cart-info__row">
@@ -175,57 +182,20 @@
             href="./payment.html"
             class="cart-info__next-btn btn btn--primary btn--rounded"
           >
-            Continue to checkout
+            Book
           </a>
         </div>
         <div class="cart-info">
-            <h2 class="cart-info__sub-heading">Items details</h2>
-            <div class="cart-info__list">
-              <!-- Cart item 1 -->
-              <article class="cart-item">
-                <a href="/" class="cart-item__img">
-                  <img
-                    src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404014/samples/chair-and-coffee-table.jpg"
-                    class="cart-item__thumb"
-                    alt=""
-                  />
-                </a>
-                <div class="cart-item__info">
-                  <div class="cart-item__info-left">
-                    <h3 class="cart-item__title">
-                      <a href="/"> Deluxe </a>
-                    </h3>
-                    <p class="cart-item__price-wrap">Capacity: 5 persons</p>
-                    <div class="cart-item__ctrl cart-item__ctrl--md-block">
-                      <div class="cart-item__input">
-                        <button class="cart-item__input-btn">
-                          <i class="fa-regular fa-square-minus"></i>
-                        </button>
-                        <span>1</span>
-                        <button class="cart-item__input-btn">
-                          <i class="fa-regular fa-square-plus"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="cart-item__info-right">
-                    <p class="cart-item__total-price">$47.00</p>
-                    <div class="cart-item__ctrl">
-                      <button
-                        class="cart-item__ctrl-btn js-toggle"
-                        toggle-target="#delete-confirm"
-                      >
-                        <i class="fa-solid fa-trash"></i>
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
+          <h2 class="cart-info__sub-heading">Items details</h2>
+          <div class="cart-info__list"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/checkout.js') }}"
+></script>
 {% endblock %}

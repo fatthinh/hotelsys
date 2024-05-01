@@ -23,13 +23,13 @@ function initJsToggle() {
       });
     };
 
-    // document.onclick = function (e) {
-    //   if (!e.target.closest(target)) {
-    //     const isHidden = $(target).classList.contains("hide");
-    //     if (!isHidden) {
-    //       button.click();
-    //     }
-    //   }
-    // };
+    document.onclick = function (e) {
+      if (!e.target.closest(target)) {
+        const isHidden = $(target).classList.contains("hide");
+        if (!isHidden) {
+          button.click();
+        }
+      }
+    };
   });
 }
