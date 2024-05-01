@@ -297,8 +297,53 @@
   const checkIn = $("#check-in");
   const checkOut = $("#check-out");
 
+  const format = (value) => {
+    return value.toString().length === 1 ? `0${value}` : value;
+  };
+
   checkIn.value = "{{ check_in  }}";
   checkOut.value = "{{ check_out }}";
+
+  const minDate = new Date();
+  const maxDate = new Date();
+  checkIn.setAttribute(
+    "max",
+    `${maxDate.getFullYear()}-${format(maxDate.getMonth() + 2)}-${format(
+      maxDate.getDate()
+    )}`
+  );
+
+  checkIn.setAttribute(
+    "min",
+    `${minDate.getFullYear()}-${format(minDate.getMonth() + 1)}-${format(
+      minDate.getDate()
+    )}`
+  );
+
+  checkIn.addEventListener("change", () => {
+    if (checkIn.value > checkOut.value) {
+      setValidCheckOut();
+    }
+  });
+
+  checkOut.addEventListener("change", () => {
+    setValidCheckOut();
+  });
+
+  const setValidCheckOut = () => {
+    // Parse the date values into Date objects
+    const currentCheckIN = new Date(checkIn.value);
+    const currentCheckOut = new Date(checkOut.value);
+
+    // Ensure currentCheckOutis at least one day after currentCheckIN
+    if (currentCheckOut <= currentCheckIN) {
+      currentCheckIN.setDate(currentCheckIN.getDate() + 1);
+      currentCheckIN.setMonth(currentCheckIN.getMonth() + 1);
+      const date = format(currentCheckIN.getDate());
+      const month = format(currentCheckIN.getMonth());
+      checkOut.value = `${currentCheckIN.getFullYear()}-${month}-${date}`;
+    }
+  };
 
   const target = $("#room-items");
   $$(".btn-detail").forEach((item) => {
