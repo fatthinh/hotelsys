@@ -167,38 +167,6 @@
         </div>
 
         <div class="form__row">
-          <div class="form__group">
-            <label for="adults" class="form__label form__label--small"
-              >Adults</label
-            >
-            <div class="form__text-input form__text-input--small">
-              <input
-                type="number"
-                name="adults"
-                id="adults"
-                class="form__input"
-                min="1"
-                value="1"
-              />
-            </div>
-          </div>
-          <div class="form__group">
-            <label for="children" class="form__label form__label--small"
-              >Children</label
-            >
-            <div class="form__text-input form__text-input--small">
-              <input
-                type="number"
-                name="children"
-                id="children"
-                class="form__input"
-                min="0"
-                value="0"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="form__row">
           <button
             class="btn form__group"
             style="background-color: rgba(85, 85, 230, 0.842)"
@@ -245,8 +213,13 @@
             min-height: 320px;
           "
         >
-          <div class="cart-info__row"><span>Check In:</span> 19/08/2024</div>
-          <div class="cart-info__row"><span>Check Out:</span> 21/08/2024</div>
+          <div class="cart-info__row">
+            <span>Check In:</span>
+            {{check_in}}
+          </div>
+          <div class="cart-info__row">
+            <span>Check Out:</span> {{check_out}}
+          </div>
           <div class="cart-info__separate"></div>
           <div class="cart-info__row">
             <span>Estimated Total</span>
@@ -300,6 +273,16 @@
   const format = (value) => {
     return value.toString().length === 1 ? `0${value}` : value;
   };
+
+  function formatDate(inputDate) {
+    var date = new Date(inputDate);
+    if (!isNaN(date.getTime())) {
+      // Months use 0 index.
+      return (
+        date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear()
+      );
+    }
+  }
 
   checkIn.value = "{{ check_in  }}";
   checkOut.value = "{{ check_out }}";

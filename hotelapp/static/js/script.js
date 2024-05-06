@@ -33,3 +33,12 @@ function initJsToggle() {
     };
   });
 }
+
+const loading = () => {
+  const isHidden = $("#loader").classList.contains("hide");
+
+  requestAnimationFrame(() => {
+    $("#loader").classList.toggle("hide", !isHidden);
+    $("#loader").classList.toggle("show", isHidden);
+  });
+};

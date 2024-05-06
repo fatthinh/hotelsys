@@ -1,6 +1,4 @@
-import dao
-from flask import session
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 def string_to_date(str):
@@ -19,38 +17,9 @@ def room_type_serializer(room):
     }
 
 
-def get_cart_total(cart):
-    total_amount, total_quantity = 0, 0
-
-    if cart:
-        for item in cart['items']:
-            room = dao.get_room_type_by_id(item['id'])
-            total_amount += item["quantity"] * room.price
-            total_quantity += item["quantity"]
-
+def room_serializer(room):
     return {
-        'items': cart['items'],
-        'total_amount': total_amount,
-        'total_quantity': total_quantity
+        "id": room.id,
+        "name": room.name,
+        "room_type": room.room_type
     }
-
-
-# def check_available(room_type, check_in, check_out):
-#     check_in = string_to_date(check_in)
-#     check_out = string_to_date(check_out)
-#     rooms = []
-
-#     for room in dao.get_rooms_by_type(room_type):
-#         bookings = [booking for booking in room.bookings if booking.created_at >=
-#                     datetime.now() - timedelta(days=30)]
-
-#         available = True
-#         for booking in bookings:
-#             booking_in = booking.check_in
-#             booking_out = booking.check_out
-#             if not ((check_in < booking_in and check_out < booking_in) or check_in > booking_out):
-#                 available = False
-#         if available:
-#             rooms.append(room)
-
-#     return rooms

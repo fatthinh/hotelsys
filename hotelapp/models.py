@@ -4,9 +4,9 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import relationship
 from enum import Enum as Enumeration
 import json
-import hashlib
 from flask_login import UserMixin
-from utils import string_to_date
+import utils
+import hashlib
 
 
 class UserStatus(Enumeration):
@@ -39,13 +39,13 @@ class Rating(Enumeration):
 class Person(db.Model):
     __abstract__ = True
     id = Column(Integer, autoincrement=True, primary_key=True)
-    first_name = Column(String(50))
-    last_name = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False)
     address = Column(Text)
     identity_num = Column(String(20), unique=True)
 
 
 class User(Person, UserMixin):
+    first_name = Column(String(50))
     phone = Column(String(11), nullable=False, unique=True)
     email = Column(String(40), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
@@ -79,12 +79,11 @@ class RoomType(db.Model):
     rooms = relationship("Room", lazy=True)
 
     def check_available(self, check_in, check_out):
-
         rooms = []
 
         if check_in and check_out:
-            check_in = string_to_date(check_in)
-            check_out = string_to_date(check_out)
+            check_in = utils.string_to_date(check_in)
+            check_out = utils.string_to_date(check_out)
 
             for room in self.rooms:
                 bookings = [booking for booking in room.bookings if booking.created_at >=
@@ -98,6 +97,12 @@ class RoomType(db.Model):
                     rooms.append(room)
 
         return rooms
+
+
+class Image(db.Model):
+    id = Column(Integer, autoincrement=True,  primary_key=True)
+    src = Column(String(255), nullable=False)
+    room_type = Column(Integer, ForeignKey(RoomType.id))
 
 
 class BaseAmenity(db.Model):
@@ -135,14 +140,18 @@ class BaseForm(db.Model):
 
 
 class Booking(BaseForm):
-    first_name = Column(String(50))
-    last_name = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False)
     phone = Column(String(11), nullable=False)
     email = Column(String(50), nullable=False)
     notes = Column(Text)
     receptionist = Column(Integer, ForeignKey(User.id))
     rooms = relationship(Room, secondary="booking_room", backref='bookings')
-    guests = relationship(Guest, secondary="booking_guest", backref="bookings")
+
+    def add_room(self, room):
+        self.rooms.append(room)
+
+    def remove_room(self, room):
+        self.rooms.remove(room)
 
 
 class Reservation(BaseForm):
@@ -167,17 +176,20 @@ reservation_room = Table("reservation_room",
                              Reservation.id), primary_key=True),
                          Column('room_id', Integer, ForeignKey(Room.id), primary_key=True))
 
-booking_guest = Table("booking_guest",
-                      db.metadata,
-                      Column('booking_id', Integer, ForeignKey(
-                          Booking.id), primary_key=True),
-                      Column('guest_id', Integer, ForeignKey(Guest.id), primary_key=True))
 
-reservation_guest = Table("reservation_guest",
-                          db.metadata,
-                          Column('reservation_id', Integer, ForeignKey(
-                              Reservation.id), primary_key=True),
-                          Column('guest_id', Integer, ForeignKey(Guest.id), primary_key=True))
+class BookingGuest(db.Model):
+    id = Column(Integer, autoincrement=True,  primary_key=True)
+    booking_id = Column(Integer, ForeignKey(Booking.id), nullable=False)
+    guest_id = Column(Integer, ForeignKey(Guest.id), nullable=False)
+    room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
+
+
+class ReservationGuest(db.Model):
+    id = Column(Integer, autoincrement=True,  primary_key=True)
+    reservation_id = Column(Integer, ForeignKey(
+        Reservation.id), nullable=False)
+    guest_id = Column(Integer, ForeignKey(Guest.id), nullable=False)
+    room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
 
 
 class Invoice(db.Model):
@@ -258,30 +270,27 @@ def insert_amenity_room():
 
 if __name__ == "__main__":
     with app.app_context():
-        # db.create_all()
+        db.create_all()
 
-        # insert_data(db, Amenity, "amenity")
-        # insert_data(db, RoomType, "roomType")
+        insert_data(db, Amenity, "amenity")
+        insert_data(db, RoomType, "roomType")
 
-        # with open(f'data/users.json', encoding='utf-8') as f:
-        #     items = json.load(f)
-        #     for item in items:
-        #         first_name = item['first_name']
-        #         last_name = item['last_name']
-        #         address = item['address']
-        #         identity_num = item['identity_num']
-        #         phone = item['phone']
-        #         email = item['email']
-        #         password = str(hashlib.md5(
-        #             item['password'].encode('utf-8')).hexdigest())
+        with open(f'data/users.json', encoding='utf-8') as f:
+            items = json.load(f)
+            for item in items:
+                first_name = item['first_name']
+                last_name = item['last_name']
+                address = item['address']
+                identity_num = item['identity_num']
+                phone = item['phone']
+                email = item['email']
+                password = str(hashlib.md5(
+                    item['password'].encode('utf-8')).hexdigest())
 
-        #         db.session.add(User(first_name=first_name, last_name=last_name, address=address,
-        #                             identity_num=identity_num, phone=phone, email=email, password=password))
-        #     db.session.commit()
+                db.session.add(User(first_name=first_name, name=last_name, address=address,
+                                    identity_num=identity_num, phone=phone, email=email, password=password))
+            db.session.commit()
 
-        # insert_data(db, Room, "room")
-        # insert_data(db, Guest, "guest")
-        insert_data(db, Booking, "booking")
-        insert_amenity_room()
+        insert_data(db, Room, "room")
 
         # clear_data(db)

@@ -9,6 +9,9 @@
   </div>
 </div>
 
+{% if 'cart' in session %} {%set check_in = session.get("cart").check_in %}
+{%set check_out = session.get("cart").check_out %} {%set items =
+session.get("cart")['items'] %}
 <div class="container" style="margin-top: 30px">
   <div class="checkout-container">
     <div class="row gy-xl-3">
@@ -17,142 +20,95 @@
           <h1 class="cart-info__heading">Booking information</h1>
           <div class="cart-info__separate"></div>
 
-          <div class="booker">
-            <div class="form__row">
+          <form class="form" method="post" action="/book" id="booker">
+            <div class="booker">
+              <div class="form__row">
+                <div class="form__group">
+                  <label for="name" class="form__label form__label--small"
+                    >Name</label
+                  >
+                  <div class="form__text-input form__text-input--small">
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="Name"
+                      class="form__input"
+                      required
+                      minlength="2"
+                    />
+                  </div>
+                  <p class="form__error">Name must be at least 2 characters</p>
+                </div>
+                <div class="form__group">
+                  <label for="phone" class="form__label form__label--small"
+                    >Phone</label
+                  >
+                  <div class="form__text-input form__text-input--small">
+                    <input
+                      type="tel"
+                      name="phone"
+                      id="phone"
+                      placeholder="Phone"
+                      class="form__input"
+                      required
+                      minlength="10"
+                    />
+                  </div>
+                  <p class="form__error">
+                    Phone must be at least 10 characters
+                  </p>
+                </div>
+              </div>
               <div class="form__group">
-                <label for="name" class="form__label form__label--small"
-                  >Name</label
+                <label for="email" class="form__label form__label--small"
+                  >Email</label
                 >
                 <div class="form__text-input form__text-input--small">
                   <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    placeholder="Name"
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Email"
                     class="form__input"
                     required
                     minlength="2"
                   />
                 </div>
-                <p class="form__error">Name must be at least 2 characters</p>
+                <p class="form__error">Example: thinh@gmail.com</p>
               </div>
               <div class="form__group">
-                <label for="phone" class="form__label form__label--small"
-                  >Phone</label
+                <label for="notes" class="form__label form__label--small"
+                  >Notes</label
                 >
-                <div class="form__text-input form__text-input--small">
-                  <input
-                    type="tel"
-                    name="phone"
-                    id="phone"
-                    placeholder="Phone"
-                    class="form__input"
-                    required
-                    minlength="10"
-                  />
+                <div class="form__text-area">
+                  <textarea
+                    name="notes"
+                    id="notes"
+                    placeholder="Note your requirements"
+                    class="form__text-area-input"
+                  ></textarea>
                 </div>
-                <p class="form__error">Phone must be at least 10 characters</p>
               </div>
             </div>
-            <div class="form__group">
-              <label for="email" class="form__label form__label--small"
-                >Email</label
-              >
-              <div class="form__text-input form__text-input--small">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Email"
-                  class="form__input"
-                  required
-                  minlength="2"
-                />
-              </div>
-              <p class="form__error">Example: thinh@gmail.com</p>
-            </div>
-            <div class="form__group">
-              <label for="notes" class="form__label form__label--small"
-                >Notes</label
-              >
-              <div class="form__text-area">
-                <textarea
-                  name="notes"
-                  id="notes"
-                  placeholder="Note your requirements"
-                  class="form__text-area-input"
-                ></textarea>
-              </div>
-            </div>
-          </div>
+          </form>
 
           <div class="cart-info__separate"></div>
 
-          <h2 class="cart-info__sub-heading">Guests</h2>
+          {%set currentRoom = rooms | selectattr("id", "equalto", items[0].room)
+          | first%}
+          <h2 class="cart-info__sub-heading">
+            Room<span class="room-name">({{currentRoom.name}})</span>'s guests
+          </h2>
 
-          <ul class="passenger-list">
-            <li class="passenger-item" data-id="1">
-              <div class="form__row">
-                <div class="form__group">
-                  <div class="form__text-input form__text-input--small">
-                    <input
-                      type="text"
-                      name=""
-                      placeholder="Name"
-                      id="passenger"
-                      class="form__input"
-                    />
-                  </div>
-                  <p class="form__error">
-                    Phone must be at least 11 characters
-                  </p>
-                </div>
-
-                <div class="form__group">
-                  <div class="form__text-input form__text-input--small">
-                    <input
-                      type="text"
-                      name=""
-                      placeholder="Identity number"
-                      id="passenger-id"
-                      class="form__input"
-                      pattern="[0-9]{12}"
-                      maxlength="12"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div class="form__group form__group--inline" style="flex: 0.4">
-                  <label class="form__checkbox">
-                    <input
-                      type="checkbox"
-                      name=""
-                      id=""
-                      class="form__checkbox-input d-none"
-                      checked
-                    />
-                    <span class="form__checkbox-label">Vietnamese</span>
-                  </label>
-                </div>
-
-                <div class="form__group" style="flex: 0.2">
-                  <button
-                    class="btn btn--small btn--danger js-remove-passenger"
-                  >
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <ul class="guest-list" data-room="{{items[0].room}}"></ul>
 
           <div class="form__group">
             <button
-              class="btn btn--small btn--primary js-more-passenger"
+              class="btn btn--small btn--primary js-more-guest"
               style="width: 100%"
             >
-              More passenger
+              More guest
             </button>
           </div>
         </div>
@@ -160,40 +116,56 @@
       <div class="col-4 col-xl-12">
         <div class="cart-info">
           <div class="cart-info__row">
+            <a
+              href="/booking?check-in={{check_in}}&check-out={{check_out}}"
+              style="
+                width: 100%;
+                text-align: right;
+                cursor: pointer;
+                padding: 4px 2px;
+              "
+            >
+              <span><i class="fa-solid fa-chevron-left"></i></span>
+              <span>Back to cart</span>
+            </a>
+          </div>
+          <div class="cart-info__row">
+            <span>Check in</span>
+            <span>{{check_in}}</span>
+          </div>
+          <div class="cart-info__row">
+            <span>Check out </span>
+            <span>{{check_out}}</span>
+          </div>
+          <div class="cart-info__row">
             <span
               >Subtotal <span class="cart-info__sub-label">(Rooms)</span></span
             >
             <span class="total-rooms"></span>
           </div>
-          <div class="cart-info__row">
-            <span>Price <span class="cart-info__sub-label">(Total)</span></span>
-            <span class="total-amount"></span>
-          </div>
-          <div class="cart-info__row">
-            <span>Surcharge</span>
-            <span class="surcharge"></span>
-          </div>
           <div class="cart-info__separate"></div>
           <div class="cart-info__row">
             <span>Estimated Total</span>
-            <span>$201.65</span>
+            <span class="total-amount"></span>
           </div>
-          <a
-            href="./payment.html"
-            class="cart-info__next-btn btn btn--primary btn--rounded"
+          <button
+            class="cart-info__next-btn btn btn--primary btn--rounded btn-book"
+            style="width: 100%"
+            type="submit"
+            form="booker"
           >
             Book
-          </a>
+          </button>
         </div>
         <div class="cart-info">
-          <h2 class="cart-info__sub-heading">Items details</h2>
+          <h2 class="cart-info__sub-heading">Rooms</h2>
           <div class="cart-info__list"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
+{% endif %} {% endblock %} {% block javascript %}
 <script
   type="text/javascript"
   src="{{ url_for('static', filename='js/checkout.js') }}"

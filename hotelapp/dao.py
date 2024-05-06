@@ -24,10 +24,48 @@ def get_room_by_id(id):
     return models.Room.query.get(id)
 
 
+def get_guests():
+    return models.Guest.query.all()
+
+
+def get_guest_by_id(id):
+    return models.Guest.query.get(id)
+
+
 def auth_user(email, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     return models.User.query.filter(models.User.email.__eq__(email.strip()),
                                     models.User.password.__eq__(password)).first()
+
+
+def add_booking(booker, cart):
+    if booker and cart:
+        booking = models.Booking(
+            name=booker['name'], phone=booker['phone'], email=booker['email'], notes=booker['notes'], check_out=cart['check_out'], check_in=cart['check_in'])
+        db.session.add(booking)
+
+        for guest_data in cart['guests']:
+            room = guest_data['room']
+            guest = [item for item in get_guests() if guest_data['identity']
+                     == item.identity_num]
+
+            if guest:
+                guest = guest[0]
+            else:
+                guest = models.Guest(
+                    name=guest_data['name'], identity_num=guest_data['identity'], is_vietnamese=guest_data['is_vietnamese'])
+                db.session.add(guest)
+                db.session.commit()
+
+            booking_guest = models.BookingGuest(
+                booking_id=booking.id, guest_id=guest.id, room_id=room)
+            db.session.add(booking_guest)
+
+        for room_data in cart['items']:
+            room = get_room_by_id(room_data['room'])
+            booking.add_room(room=room)
+
+        db.session.commit()
 
 
 def load_room_detail(room_id):

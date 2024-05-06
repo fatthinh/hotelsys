@@ -13,5 +13,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 8
 app.config["SESSION_COOKIE_HTTPONLY"] = False
 
-db = SQLAlchemy(app)
 login_manager = LoginManager(app)
+
+db = SQLAlchemy(app)
