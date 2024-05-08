@@ -32,6 +32,10 @@ def get_guest_by_id(id):
     return models.Guest.query.get(id)
 
 
+def get_amenity_types():
+    return models.AmenityType.query.all()
+
+
 def auth_user(email, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     return models.User.query.filter(models.User.email.__eq__(email.strip()),

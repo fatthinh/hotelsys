@@ -83,6 +83,12 @@ def get_room_types():
     return {'data': [utils.room_type_serializer(room) for room in rooms]}
 
 
+@app.route('/api/room_types/<room_id>', methods=['get'])
+def get_room_type(room_id):
+    room = dao.get_room_type_by_id(room_id)
+    return jsonify({'data': utils.room_type_serializer(room)})
+
+
 @app.route('/api/rooms', methods=['get'])
 def get_rooms():
     rooms = dao.get_rooms()
@@ -235,12 +241,6 @@ def remove_guest_info(guest_id):
 @login_manager.user_loader
 def load_user(user_id):
     return dao.get_user_by_id(user_id)
-
-
-@app.route('/room-detail/<room_id>', methods=['get'])
-def room_detail(room_id):
-    room = dao.load_room_detail(room_id)
-    return render_template('room-detail.html', room=room)
 
 
 if __name__ == "__main__":

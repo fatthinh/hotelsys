@@ -1,9 +1,8 @@
 [
   {
-    "check_in": "2024-05-01",
-    "check_out": "2024-05-07",
-    "first_name": "John",
-    "last_name": "Doe",
+    "check_in": "2024-05-17",
+    "check_out": "2024-05-19",
+    "name": "John Doe",
     "phone": "12345678901",
     "email": "john.doe@example.com",
     "notes": "Special request: extra towels"
@@ -11,8 +10,7 @@
   {
     "check_in": "2024-05-10",
     "check_out": "2024-05-15",
-    "first_name": "Jane",
-    "last_name": "Smith",
+    "name": "Jane Smith",
     "phone": "98765432109",
     "email": "jane.smith@example.com",
     "notes": ""
@@ -20,8 +18,7 @@
   {
     "check_in": "2024-05-20",
     "check_out": "2024-05-25",
-    "first_name": "Michael",
-    "last_name": "Johnson",
+    "name": "Michael Johnson",
     "phone": "45678901234",
     "email": "michael.johnson@example.com",
     "notes": "Late check-in requested"
@@ -29,8 +26,7 @@
   {
     "check_in": "2024-06-01",
     "check_out": "2024-06-05",
-    "first_name": "Emily",
-    "last_name": "Brown",
+    "name": "Emily Brown",
     "phone": "56789012345",
     "email": "emily.brown@example.com",
     "notes": "Birthday celebration"
@@ -38,8 +34,7 @@
   {
     "check_in": "2024-06-10",
     "check_out": "2024-06-15",
-    "first_name": "David",
-    "last_name": "Wilson",
+    "name": "David Wilson",
     "phone": "67890123456",
     "email": "david.wilson@example.com",
     "notes": "Early check-out required"
@@ -47,8 +42,7 @@
   {
     "check_in": "2024-06-20",
     "check_out": "2024-06-25",
-    "first_name": "Sarah",
-    "last_name": "Martinez",
+    "name": "Sarah Martinez",
     "phone": "78901234567",
     "email": "sarah.martinez@example.com",
     "notes": ""
@@ -56,8 +50,7 @@
   {
     "check_in": "2024-07-01",
     "check_out": "2024-07-07",
-    "first_name": "Christopher",
-    "last_name": "Taylor",
+    "name": "Christopher Taylor",
     "phone": "89012345678",
     "email": "christopher.taylor@example.com",
     "notes": "Early breakfast requested"
@@ -65,8 +58,7 @@
   {
     "check_in": "2024-07-10",
     "check_out": "2024-07-15",
-    "first_name": "Jessica",
-    "last_name": "Anderson",
+    "name": "Jessica Anderson",
     "phone": "90123456789",
     "email": "jessica.anderson@example.com",
     "notes": "Late check-out requested"
@@ -74,8 +66,7 @@
   {
     "check_in": "2024-07-20",
     "check_out": "2024-07-25",
-    "first_name": "Kevin",
-    "last_name": "Thomas",
+    "name": "Kevin Thomas",
     "phone": "01234567890",
     "email": "kevin.thomas@example.com",
     "notes": ""
@@ -83,8 +74,7 @@
   {
     "check_in": "2024-08-01",
     "check_out": "2024-08-05",
-    "first_name": "Amanda",
-    "last_name": "Hernandez",
+    "name": "Amanda Hernandez",
     "phone": "12345678901",
     "email": "amanda.hernandez@example.com",
     "notes": "Family vacation"

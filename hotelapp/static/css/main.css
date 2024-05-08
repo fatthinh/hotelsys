@@ -3178,7 +3178,7 @@ html {
 .check-available {
   position: sticky !important;
   top: 120px;
-  height: 224px;
+  height: 560px;
   box-shadow: 1px 4px 12px 6px rgba(202, 202, 202, 0.27);
 }
 

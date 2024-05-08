@@ -4,7 +4,7 @@
     "price": 10,
     "room_size": 30,
     "description": "A cozy single room with basic amenities.",
-    "adults": 1,
+    "adults": 2,
     "children": 0
   },
   {
@@ -12,7 +12,7 @@
     "price": 15,
     "room_size": 30,
     "description": "A comfortable double room suitable for couples.",
-    "adults": 2,
+    "adults": 3,
     "children": 0
   },
   {
@@ -20,7 +20,7 @@
     "price": 25,
     "room_size": 30,
     "description": "An elegant suite with a separate living area and luxurious amenities.",
-    "adults": 2,
+    "adults": 3,
     "children": 1
   },
   {
@@ -28,7 +28,7 @@
     "price": 20,
     "room_size": 30,
     "description": "Spacious room suitable for families with children, featuring extra bedding options.",
-    "adults": 2,
+    "adults": 3,
     "children": 2
   },
   {
@@ -36,7 +36,7 @@
     "price": 18,
     "room_size": 30,
     "description": "Well-appointed room with additional amenities for business travelers.",
-    "adults": 1,
+    "adults": 2,
     "children": 0
   },
   {
@@ -44,7 +44,7 @@
     "price": 50,
     "room_size": 30,
     "description": "Luxurious suite located on the top floor with panoramic views and premium services.",
-    "adults": 2,
+    "adults": 3,
     "children": 0
   },
   {
@@ -52,7 +52,7 @@
     "price": 30,
     "room_size": 30,
     "description": "A stylish suite with a comfortable seating area and modern furnishings.",
-    "adults": 2,
+    "adults": 3,
     "children": 0
   },
   {
@@ -60,7 +60,7 @@
     "price": 16,
     "room_size": 30,
     "description": "Room with two single beds, ideal for friends or colleagues traveling together.",
-    "adults": 2,
+    "adults": 3,
     "children": 0
   },
   {
@@ -68,7 +68,7 @@
     "price": 12,
     "room_size": 30,
     "description": "Wheelchair-accessible room with specially designed amenities for guests with mobility needs.",
-    "adults": 1,
+    "adults": 2,
     "children": 0
   },
   {
@@ -76,7 +76,7 @@
     "price": 40,
     "room_size": 30,
     "description": "Romantic suite designed for honeymooners, featuring a jacuzzi and intimate atmosphere.",
-    "adults": 2,
+    "adults": 3,
     "children": 0
   }
 ]

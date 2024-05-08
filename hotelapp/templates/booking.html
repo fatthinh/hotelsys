@@ -31,20 +31,29 @@
         {% for room in rooms %}
         <div class="room-item" data-id="{{room.id}}">
           <div class="room-thumbnail">
-            <img
-              src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404015/samples/cup-on-a-table.jpg"
-              alt="room image"
-            />
+            {% if room.images %} <img src="/static/img/{{room.images | first |
+            attr("src")}}" alt="room image" /> {% endif %}
           </div>
           <div class="room-content">
             {% set available_rooms = room.check_available(check_in, check_out)%}
+            {% set amenities = room.amenities %} {% set bed =( amenities |
+            selectattr("amenity_type", "equalto", 7) | first) %} {% set services
+            = (amenities | selectattr("amenity_type", "equalto", 5) | list) %}
             <h2>{{room.name}}</h2>
             <h4>{{room.price}}$ <span>/ Day</span></h4>
             <div class="room-feature">
               <h6>Size: <span>{{room.room_size}} ft</span></h6>
-              <h6>Capacity: <span>Max persion {{room.adults}}</span></h6>
-              <h6>Bed: <span>King beds</span></h6>
-              <h6>Services: <span>Wifi, television ...</span></h6>
+              <h6>Capacity: <span>{{room.adults}}</span></h6>
+              <h6>
+                Bed:
+                <span>{{ bed }}</span>
+              </h6>
+              <h6>
+                Services:
+                <span>
+                  {% for service in services %} {{service}}, {% endfor %}...
+                </span>
+              </h6>
               <h6>Available: <span>{{available_rooms|length}}</span></h6>
             </div>
             <div class="room-actions">
@@ -64,76 +73,7 @@
         {% endfor %}
       </div>
 
-      <div class="room-detail hide" id="room-detail">
-        <h2 class="room-detail__heading">
-          <button
-            class="room-detail__back js-toggle"
-            toggle-target="#room-detail"
-          >
-            <i class="fa-solid fa-arrow-left"></i>
-          </button>
-          <span class="room-detail__title"> Personal info </span>
-        </h2>
-
-        <div class="separate"></div>
-
-        <img
-          src="https://admin.bluejayhotelsystem.com/Uploads/4354/e87f856f-854f-4939-9a86-1e39e1c6bc84.jpg"
-          width="500"
-          alt="room-img"
-        />
-
-        <div class="room-info">
-          <div class="title">
-            <strong>More info</strong>
-          </div>
-          <div class="description">
-            Room Size 60 m².<br />
-            This suite features a balcony, minibar and bathrobe.
-          </div>
-        </div>
-
-        <div class="room-info">
-          <div class="title">
-            <strong>People Available</strong>
-          </div>
-          <div class="description">4 Adults, 1 Children</div>
-        </div>
-
-        <div class="room-info">
-          <div class="title">
-            <strong>Bed room</strong>
-          </div>
-          <div class="description">
-            Bed room 1 : 2 Queen Bed(s), 1 Sofa Bed(s)
-          </div>
-        </div>
-
-        <div class="room-info">
-          <div class="title">
-            <strong>Room Amenities</strong>
-          </div>
-          <div class="description">
-            <ul style="margin: 0px; padding: 0px">
-              <li class="list-inline-item">
-                <strong>Bedroom</strong>: Minibar, Desk, Sofa, Air conditioner,
-                Electric kettle, Tea/ coffee / water,
-              </li>
-              <li class="list-inline-item">
-                <strong>Bath room</strong>: Slipper, Free toiletries, Bathtub,
-                Bath towel, Bathrobe,
-              </li>
-              <li class="list-inline-item">
-                <strong>View</strong> : Ocean view, Window, Street View,
-              </li>
-              <li class="list-inline-item">
-                <strong>Media &amp; Technology </strong>: Flat screen TV,
-                Telephone, Cable channels,
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <div class="room-detail hide" id="room-detail"></div>
     </div>
     <div class="col-4 check-available">
       <form action="" class="form">
@@ -175,177 +115,266 @@
           </button>
         </div>
       </form>
+
+      <div class="form__group">
+        <label for="name" class="form__label form__label--small">
+          Policy
+        </label>
+      </div>
+      <div class="form__group">
+        <p>Check in: 14h</p>
+        <p>Check out: 12h</p>............
+      </div>
     </div>
   </div>
-</div>
 
-<div class="fixed-cart">
-  <a class="cart-icon js-toggle" toggle-target="#cart"
-    ><i class="fa-solid fa-basket-shopping"></i>
-  </a>
-  <span class="badge badge-warning" id="lblCartCount"> 0 </span>
-</div>
+  <div class="fixed-cart">
+    <a class="cart-icon js-toggle" toggle-target="#cart"
+      ><i class="fa-solid fa-basket-shopping"></i>
+    </a>
+    <span class="badge badge-warning" id="lblCartCount"> 0 </span>
+  </div>
 
-<!-- Modal: address new shipping address -->
-<div id="cart" class="modal modal--large hide">
-  <div class="modal__content">
-    <form action="" class="form">
-      <div class="modal__bottom" style="margin-top: 0">
+  <!-- Modal: address new shipping address -->
+  <div id="cart" class="modal modal--large hide">
+    <div class="modal__content">
+      <form action="" class="form">
+        <div class="modal__bottom" style="margin-top: 0">
+          <button
+            class="btn btn--small btn--text modal__btn js-toggle"
+            toggle-target="#cart"
+          >
+            <i class="fa-solid fa-x"></i>
+          </button>
+        </div>
+        <h2 class="modal__heading">Booking Infomation</h2>
+        <div class="modal__body row gx-4" style="overflow-y: unset">
+          <div class="content-left col-8">
+            <div
+              class="cart-list"
+              style="overflow-y: auto; max-height: calc(100vh - 180px)"
+            ></div>
+          </div>
+          <div
+            class="content-right col-4 cart-info"
+            style="
+              box-shadow: -19px 32px 73px -3px rgba(177, 175, 175, 0.55);
+              min-height: 320px;
+            "
+          >
+            <div class="cart-info__row">
+              <span>Check In:</span>
+              {{check_in}}
+            </div>
+            <div class="cart-info__row">
+              <span>Check Out:</span> {{check_out}}
+            </div>
+            <div class="cart-info__separate"></div>
+            <div class="cart-info__row">
+              <span>Estimated Total</span>
+              <span class="total"></span>
+            </div>
+            <a
+              href="/checkout"
+              class="cart-info__next-btn btn btn--primary btn--rounded"
+            >
+              Continue to checkout
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal__overlay"></div>
+  </div>
+
+  <!-- Modal: confirm remove cart item -->
+  <div id="delete-confirm" class="modal modal--small hide">
+    <div class="modal__content">
+      <p class="modal__text">Do you want to remove this item from cart?</p>
+      <div class="modal__bottom">
         <button
-          class="btn btn--small btn--text modal__btn js-toggle"
-          toggle-target="#cart"
+          class="btn btn--small btn--outline modal__btn js-toggle"
+          toggle-target="#delete-confirm"
         >
-          <i class="fa-solid fa-x"></i>
+          Cancel
+        </button>
+        <button
+          class="btn btn--small btn--danger btn--primary modal__btn btn--no-margin js-toggle confirm"
+          toggle-target="#delete-confirm"
+        >
+          Delete
         </button>
       </div>
-      <h2 class="modal__heading">Booking Infomation</h2>
-      <div class="modal__body row gx-4" style="overflow-y: unset">
-        <div class="content-left col-8">
-          <div
-            class="cart-list"
-            style="overflow-y: auto; max-height: calc(100vh - 180px)"
-          ></div>
-        </div>
-        <div
-          class="content-right col-4 cart-info"
-          style="
-            box-shadow: -19px 32px 73px -3px rgba(177, 175, 175, 0.55);
-            min-height: 320px;
-          "
-        >
-          <div class="cart-info__row">
-            <span>Check In:</span>
-            {{check_in}}
-          </div>
-          <div class="cart-info__row">
-            <span>Check Out:</span> {{check_out}}
-          </div>
-          <div class="cart-info__separate"></div>
-          <div class="cart-info__row">
-            <span>Estimated Total</span>
-            <span class="total"></span>
-          </div>
-          <a
-            href="/checkout"
-            class="cart-info__next-btn btn btn--primary btn--rounded"
-          >
-            Continue to checkout
-          </a>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="modal__overlay"></div>
-</div>
-
-<!-- Modal: confirm remove cart item -->
-<div id="delete-confirm" class="modal modal--small hide">
-  <div class="modal__content">
-    <p class="modal__text">Do you want to remove this item from cart?</p>
-    <div class="modal__bottom">
-      <button
-        class="btn btn--small btn--outline modal__btn js-toggle"
-        toggle-target="#delete-confirm"
-      >
-        Cancel
-      </button>
-      <button
-        class="btn btn--small btn--danger btn--primary modal__btn btn--no-margin js-toggle confirm"
-        toggle-target="#delete-confirm"
-      >
-        Delete
-      </button>
     </div>
+    <div class="modal__overlay js-toggle" toggle-target="#delete-confirm"></div>
   </div>
-  <div class="modal__overlay js-toggle" toggle-target="#delete-confirm"></div>
-</div>
 
-{% endblock %} {% block javascript %}
-<script
-  type="text/javascript"
-  src="{{ url_for('static', filename='js/booking.js') }}"
-></script>
+  {% endblock %} {% block javascript %}
+  <script
+    type="text/javascript"
+    src="{{ url_for('static', filename='js/booking.js') }}"
+  ></script>
 
-<script>
-  const checkIn = $("#check-in");
-  const checkOut = $("#check-out");
+  <script>
+    const goToDetail = (id) => {
+      fetch(`/api/room_types/${id}`)
+        .then((response) => response.json())
+        .then((res) => {
+          const room = res.data;
+          $("#room-detail").innerHTML = `
+    <h2 class="room-detail__heading">
+      <button
+        class="room-detail__back"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <span class="room-detail__title"> ${room.name} </span>
+    </h2>
 
-  const format = (value) => {
-    return value.toString().length === 1 ? `0${value}` : value;
-  };
+    <div class="separate"></div>
 
-  function formatDate(inputDate) {
-    var date = new Date(inputDate);
-    if (!isNaN(date.getTime())) {
-      // Months use 0 index.
-      return (
-        date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear()
-      );
+    <img
+      src="/static/img/${room.images[0]}"
+      width="500"
+      alt="room-img"
+    />
+
+    <div class="room-info">
+      <div class="title">
+        <strong>More info</strong>
+      </div>
+      <div class="description">
+        Room Size ${room.room_size} m².<br />
+        This suite features a balcony, minibar and bathrobe.
+      </div>
+    </div>
+
+    <div class="room-info">
+      <div class="title">
+        <strong>People Available</strong>
+      </div>
+      <div class="description">${room.adults} Adults, 1 Children</div>
+    </div>
+
+    <div class="room-info">
+      <div class="title">
+        <strong>Bed room</strong>
+      </div>
+      <div class="description">
+        Bed:
+        ${room.grouped[7].map((item) => item.name)}
+      </div>
+    </div>
+
+    <div class="room-info">
+      <div class="title">
+        <strong>Room Amenities</strong>
+      </div>
+      <div class="description">
+        <ul style="margin: 0px; padding: 0px">
+          <li class="list-inline-item">
+            <strong>Bedroom</strong>: ${room.grouped[6].map(
+              (item) => item.name
+            )}
+          </li>
+          <li class="list-inline-item">
+            <strong>Bath room</strong>: ${room.grouped[1].map(
+              (item) => item.name
+            )}
+          </li>
+          <li class="list-inline-item">
+            <strong>Services </strong>: ${room.grouped[5].map(
+              (item) => item.name
+            )}
+          </li>
+        </ul>
+      </div>
+    </div>`;
+
+          $(".room-detail__back").addEventListener("click", () => {
+            toggleDisplay($("#room-items"));
+            toggleDisplay($("#room-detail"));
+          });
+        });
+    };
+
+    const checkIn = $("#check-in");
+    const checkOut = $("#check-out");
+
+    const format = (value) => {
+      return value.toString().length === 1 ? `0${value}` : value;
+    };
+
+    function formatDate(inputDate) {
+      var date = new Date(inputDate);
+      if (!isNaN(date.getTime())) {
+        // Months use 0 index.
+        return (
+          date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear()
+        );
+      }
     }
-  }
 
-  checkIn.value = "{{ check_in  }}";
-  checkOut.value = "{{ check_out }}";
+    checkIn.value = "{{ check_in  }}";
+    checkOut.value = "{{ check_out }}";
 
-  const minDate = new Date();
-  const maxDate = new Date();
-  checkIn.setAttribute(
-    "max",
-    `${maxDate.getFullYear()}-${format(maxDate.getMonth() + 2)}-${format(
-      maxDate.getDate()
-    )}`
-  );
+    const minDate = new Date();
+    const maxDate = new Date();
+    checkIn.setAttribute(
+      "max",
+      `${maxDate.getFullYear()}-${format(maxDate.getMonth() + 2)}-${format(
+        maxDate.getDate()
+      )}`
+    );
 
-  checkIn.setAttribute(
-    "min",
-    `${minDate.getFullYear()}-${format(minDate.getMonth() + 1)}-${format(
-      minDate.getDate()
-    )}`
-  );
+    checkIn.setAttribute(
+      "min",
+      `${minDate.getFullYear()}-${format(minDate.getMonth() + 1)}-${format(
+        minDate.getDate()
+      )}`
+    );
 
-  checkIn.addEventListener("change", () => {
-    if (checkIn.value > checkOut.value) {
+    checkIn.addEventListener("change", () => {
+      if (checkIn.value > checkOut.value) {
+        setValidCheckOut();
+      }
+    });
+
+    checkOut.addEventListener("change", () => {
       setValidCheckOut();
-    }
-  });
-
-  checkOut.addEventListener("change", () => {
-    setValidCheckOut();
-  });
-
-  const setValidCheckOut = () => {
-    // Parse the date values into Date objects
-    const currentCheckIN = new Date(checkIn.value);
-    const currentCheckOut = new Date(checkOut.value);
-
-    // Ensure currentCheckOutis at least one day after currentCheckIN
-    if (currentCheckOut <= currentCheckIN) {
-      currentCheckIN.setDate(currentCheckIN.getDate() + 1);
-      currentCheckIN.setMonth(currentCheckIN.getMonth() + 1);
-      const date = format(currentCheckIN.getDate());
-      const month = format(currentCheckIN.getMonth());
-      checkOut.value = `${currentCheckIN.getFullYear()}-${month}-${date}`;
-    }
-  };
-
-  const target = $("#room-items");
-  $$(".btn-detail").forEach((item) => {
-    item.addEventListener("click", () => {
-      toggleDisplay(target);
     });
-  });
 
-  $(".room-detail__back").addEventListener("click", () => {
-    toggleDisplay(target);
-  });
+    const setValidCheckOut = () => {
+      // Parse the date values into Date objects
+      const currentCheckIN = new Date(checkIn.value);
+      const currentCheckOut = new Date(checkOut.value);
 
-  const toggleDisplay = (target) => {
-    const isHidden = target.classList.contains("hide");
-    requestAnimationFrame(() => {
-      target.classList.toggle("hide", !isHidden);
-      target.classList.toggle("show", isHidden);
+      // Ensure currentCheckOutis at least one day after currentCheckIN
+      if (currentCheckOut <= currentCheckIN) {
+        currentCheckIN.setDate(currentCheckIN.getDate() + 1);
+        currentCheckIN.setMonth(currentCheckIN.getMonth() + 1);
+        const date = format(currentCheckIN.getDate());
+        const month = format(currentCheckIN.getMonth());
+        checkOut.value = `${currentCheckIN.getFullYear()}-${month}-${date}`;
+      }
+    };
+
+    const target = $("#room-items");
+    $$(".btn-detail").forEach((item) => {
+      item.addEventListener("click", () => {
+        goToDetail(parseInt(item.closest(".room-item").dataset.id));
+        toggleDisplay(target);
+      });
     });
-  };
-</script>
-<!-- The contents of myscript.js will be loaded inside the script tag -->
-{% endblock %}
+
+    const toggleDisplay = (target) => {
+      const isHidden = target.classList.contains("hide");
+      requestAnimationFrame(() => {
+        target.classList.toggle("hide", !isHidden);
+        target.classList.toggle("show", isHidden);
+      });
+    };
+  </script>
+  <!-- The contents of myscript.js will be loaded inside the script tag -->
+  {% endblock %}
+</div>

@@ -7,6 +7,7 @@ import json
 from flask_login import UserMixin
 import utils
 import hashlib
+from random import randint
 
 
 class UserStatus(Enumeration):
@@ -62,10 +63,23 @@ class ServiceStaff(Person):
     pass
 
 
+class AmenityType(db.Model):
+    id = Column(Integer, autoincrement=True,  primary_key=True)
+    name = Column(String(50), nullable=False)
+    amenities = relationship("Amenity", backref="type")
+
+    def __str__(self):
+        return self.name
+
+
 class Amenity(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
     name = Column(String(50), nullable=False)
     description = Column(Text)
+    amenity_type = Column(Integer, ForeignKey(AmenityType.id))
+
+    def __str__(self):
+        return self.name
 
 
 class RoomType(db.Model):
@@ -77,6 +91,9 @@ class RoomType(db.Model):
     children = Column(Integer, default=1)
     price = Column(Double, nullable=False)
     rooms = relationship("Room", lazy=True)
+    amenities = relationship(
+        "Amenity", secondary="amenity_room")
+    images = relationship("Image", lazy=True)
 
     def check_available(self, check_in, check_out):
         rooms = []
@@ -119,11 +136,7 @@ class AmenityRoom(BaseAmenity):
 class Room(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
     name = Column(String(50), nullable=False, unique=True)
-    status = Column(Enum(RoomStatus), default=RoomStatus.AVAILABLE)
     room_type = Column(Integer, ForeignKey(RoomType.id), nullable=False)
-
-    def check_available(self):
-        return self.bookings
 
 
 class Requirement (BaseAmenity):
@@ -260,19 +273,11 @@ def insert_data(db, obj, fileName):
     db.session.commit()
 
 
-def insert_amenity_room():
-    with open(f'data/amenity-room.json', encoding='utf-8') as f:
-        items = json.load(f)
-        for item in items:
-            db.session.add(AmenityRoom(**item))
-    db.session.commit()
-
-
 if __name__ == "__main__":
     with app.app_context():
+        clear_data(db)
         db.create_all()
 
-        insert_data(db, Amenity, "amenity")
         insert_data(db, RoomType, "roomType")
 
         with open(f'data/users.json', encoding='utf-8') as f:
@@ -292,5 +297,14 @@ if __name__ == "__main__":
             db.session.commit()
 
         insert_data(db, Room, "room")
+        insert_data(db, AmenityType, "amenityTypes")
+        insert_data(db, Amenity, "amenity")
+        insert_data(db, AmenityRoom, "amenity-room")
+        insert_data(db, Booking, "booking")
+        insert_data(db, Image, "image")
 
-        # clear_data(db)
+        for i in range(10):
+            booking = Booking.query.get_or_404(i+1)
+            for y in range(2):
+                booking.add_room(room=Room.query.get_or_404(y + randint(1, 28)))
+        db.session.commit()

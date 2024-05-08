@@ -61,7 +61,7 @@ cartItemList.addEventListener("click", (e) => {
 
 const renderCart = () => {
   cartItemList.innerHTML = "";
-  if (cart.length > 0) {
+  if (cart?.length > 0) {
     cart.forEach((item) => {
       const newItem = document.createElement("article");
       newItem.classList.add("cart-item");
@@ -72,7 +72,7 @@ const renderCart = () => {
       newItem.innerHTML = `
       <a href="/" class="cart-item__img">
       <img
-        src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404014/samples/chair-and-coffee-table.jpg"
+        src="/static/img/${info.images[0]}"
         class="cart-item__thumb"
         alt=""
       />
@@ -112,9 +112,11 @@ const renderCart = () => {
 
 const cartChanges = async (data) => {
   cart = await data.items;
-  totalCart.innerHTML = cart.length;
-  renderCart();
-  total.innerHTML = `$${data.total_amount}`;
+  setTimeout(() => {
+    totalCart.innerHTML = cart?.length ?? 0;
+    renderCart();
+    total.innerHTML = `$${data.total_amount}`;
+  }, 500);
 };
 
 // Initialize booking page
