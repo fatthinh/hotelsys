@@ -303,8 +303,8 @@ if __name__ == "__main__":
         insert_data(db, Booking, "booking")
         insert_data(db, Image, "image")
 
-        for i in range(10):
-            booking = Booking.query.get_or_404(i+1)
-            for y in range(2):
-                booking.add_room(room=Room.query.get_or_404(y + randint(1, 28)))
-        db.session.commit()
+        # for i in range(10):
+        #     booking = Booking.query.get_or_404(i+1)
+        #     for y in range(2):
+        #         booking.add_room(room=Room.query.get_or_404(y + randint(1, 28)))
+        # db.session.commit()

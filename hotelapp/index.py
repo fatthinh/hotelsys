@@ -77,6 +77,24 @@ def logout():
     return redirect('/login')
 
 
+@app.route('/register', methods=['post'])
+def register():
+    if request.method == "POST":
+        phone = request.form.get("phone")
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        user=dao.auth_user(email=email, password=password)
+        if user:
+            login_user(user)
+            return redirect('/')
+        dao.add_user(email=email, password=password,
+                        first_name=first_name, last_name=last_name, phone=phone)
+
+    return render_template('login.html')
+
+
 @app.route('/api/room_types', methods=['get'])
 def get_room_types():
     rooms = dao.get_room_types()
