@@ -1,6 +1,7 @@
 import models
 import hashlib
 from __init__ import db
+from models import User
 
 
 def get_room_types():
@@ -47,10 +48,12 @@ def add_user(email, password, first_name, last_name, phone):
     user = models.User(email=email, password=password, first_name=first_name, last_name=last_name, phone=phone)
     db.session.add(user)
 
+
 def add_booking(booker, cart):
     if booker and cart:
         booking = models.Booking(
-            name=booker['name'], phone=booker['phone'], email=booker['email'], notes=booker['notes'], check_out=cart['check_out'], check_in=cart['check_in'])
+            name=booker['name'], phone=booker['phone'], email=booker['email'], notes=booker['notes'],
+            check_out=cart['check_out'], check_in=cart['check_in'])
         db.session.add(booking)
 
         if cart['guests']:
@@ -63,7 +66,8 @@ def add_booking(booker, cart):
                     guest = guest[0]
                 else:
                     guest = models.Guest(
-                        name=guest_data['name'], identity_num=guest_data['identity'], is_vietnamese=guest_data['is_vietnamese'])
+                        name=guest_data['name'], identity_num=guest_data['identity'],
+                        is_vietnamese=guest_data['is_vietnamese'])
                     db.session.add(guest)
                     db.session.commit()
 
@@ -114,3 +118,9 @@ def load_room_detail(room_id):
         })
 
     return room_type_info
+
+
+def auth_user(email, password):
+    password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+    return User.query.filter(User.email.__eq__(email.strip()),
+                             User.password.__eq__(password)).first()

@@ -261,6 +261,17 @@ def load_user(user_id):
     return dao.get_user_by_id(user_id)
 
 
+@app.route("/admin-login", methods=['post'])
+def process_admin_login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    u = dao.auth_user(email=email, password=password)
+    if u:
+        login_user(user=u)
+
+    return redirect('/admin')
+
+
 if __name__ == "__main__":
     with app.app_context():
         app.run(debug=True)

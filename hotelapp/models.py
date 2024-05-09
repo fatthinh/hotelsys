@@ -115,6 +115,9 @@ class RoomType(db.Model):
 
         return rooms
 
+    def __str__(self):
+        return self.name
+
 
 class Image(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
@@ -137,6 +140,9 @@ class Room(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
     name = Column(String(50), nullable=False, unique=True)
     room_type = Column(Integer, ForeignKey(RoomType.id), nullable=False)
+
+    def __str__(self):
+        return self.name
 
 
 class Requirement (BaseAmenity):
@@ -296,6 +302,10 @@ if __name__ == "__main__":
                                     identity_num=identity_num, phone=phone, email=email, password=password))
             db.session.commit()
 
+        password = str(hashlib.md5("Admin@123".encode('utf-8')).hexdigest())
+        db.session.add(User(first_name="vuong", name="pham", address="tayninh",
+                            identity_num="07220300000", phone="0843751500", email="admin@admin.com", password=password, role=UserRole.ADMIN))
+
         insert_data(db, Room, "room")
         insert_data(db, AmenityType, "amenityTypes")
         insert_data(db, Amenity, "amenity")
@@ -307,4 +317,4 @@ if __name__ == "__main__":
         #     booking = Booking.query.get_or_404(i+1)
         #     for y in range(2):
         #         booking.add_room(room=Room.query.get_or_404(y + randint(1, 28)))
-        # db.session.commit()
+        db.session.commit()
