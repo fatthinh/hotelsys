@@ -58,6 +58,9 @@ class User(Person, UserMixin):
 class Guest(Person):
     is_vietnamese = Column(Boolean, default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class ServiceStaff(Person):
     pass
@@ -90,10 +93,11 @@ class RoomType(db.Model):
     adults = Column(Integer, nullable=False,  default=2)
     children = Column(Integer, default=1)
     price = Column(Double, nullable=False)
-    rooms = relationship("Room", lazy=True)
+    rooms = relationship("Room", lazy=True, backref="type")
     amenities = relationship(
         "Amenity", secondary="amenity_room")
     images = relationship("Image", lazy=True)
+    policies = relationship("Policy", secondary="roomtype_policy", lazy=True)
 
     def check_available(self, check_in, check_out):
         rooms = []
@@ -118,6 +122,12 @@ class RoomType(db.Model):
     def __str__(self):
         return self.name
 
+    def get_image(self):
+        return self.images[randint(0, len(self.images) - 1)]
+
+    def add_policy(self, policy):
+        self.policies.append(policy)
+
 
 class Image(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
@@ -140,9 +150,37 @@ class Room(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
     name = Column(String(50), nullable=False, unique=True)
     room_type = Column(Integer, ForeignKey(RoomType.id), nullable=False)
+    guests = relationship("BookingGuest", lazy=True)
 
     def __str__(self):
         return self.name
+
+    def get_room_type(self):
+        return self.type
+
+    def get_price(self):
+        return self.type.price
+
+    def get_expense(self, booking_id):
+        policies = self.get_room_type().policies
+
+        expenses = [{"name": policy.name, "expense": policy.expense}
+                    for policy in policies]
+        guests = [guest for guest in self.guests if guest.booking_id == booking_id]
+        capacity = self.get_room_type().adults
+        if (capacity == 2 and len(guests) > capacity):
+            expenses[1]['expense'] = self.get_price() * expenses[1]['expense']
+        else:
+            expenses[1]['expense'] = 0
+
+        if any(not guest.get_guest().is_vietnamese for guest in guests):
+            expenses[0]['expense'] = self.get_price() * expenses[0]['expense']
+        else:
+            expenses[0]['expense'] = 0
+        return expenses
+
+    def get_image(self):
+        return self.type.get_image()
 
 
 class Requirement (BaseAmenity):
@@ -165,12 +203,24 @@ class Booking(BaseForm):
     notes = Column(Text)
     receptionist = Column(Integer, ForeignKey(User.id))
     rooms = relationship(Room, secondary="booking_room", backref='bookings')
+    guests = relationship("BookingGuest", backref="bookings")
 
     def add_room(self, room):
         self.rooms.append(room)
 
     def remove_room(self, room):
         self.rooms.remove(room)
+
+    def get_guests(self):
+        return self.guests
+
+    def get_total(self):
+        expenses = 0
+        for room in self.rooms:
+            expenses += sum(expense['expense']
+                            for expense in room.get_expense(self.id))
+
+        return sum(room.get_price() for room in self.rooms) + expenses
 
 
 class Reservation(BaseForm):
@@ -202,6 +252,12 @@ class BookingGuest(db.Model):
     guest_id = Column(Integer, ForeignKey(Guest.id), nullable=False)
     room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
 
+    def get_guest(self):
+        return Guest.query.get(self.guest_id)
+
+    def get_room(self):
+        return Room.query.get(self.room_id)
+
 
 class ReservationGuest(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
@@ -230,7 +286,15 @@ class Policy(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     details = Column(Text)
+    expense = Column(Double)
     creator = Column(Integer, ForeignKey(User.id))
+
+
+roomtype_policy = Table("roomtype_policy",
+                        db.metadata,
+                        Column('room_type', Integer, ForeignKey(
+                            RoomType.id), primary_key=True),
+                        Column('policy_id', Integer, ForeignKey(Policy.id), primary_key=True))
 
 
 class Issue(db.Model):
@@ -284,8 +348,6 @@ if __name__ == "__main__":
         clear_data(db)
         db.create_all()
 
-        insert_data(db, RoomType, "roomType")
-
         with open(f'data/users.json', encoding='utf-8') as f:
             items = json.load(f)
             for item in items:
@@ -298,20 +360,45 @@ if __name__ == "__main__":
                 password = str(hashlib.md5(
                     item['password'].encode('utf-8')).hexdigest())
 
-                db.session.add(User(first_name=first_name, name=last_name, address=address,
-                                    identity_num=identity_num, phone=phone, email=email, password=password))
+                if phone.__eq__("335037042"):
+                    db.session.add(User(first_name=first_name, name=last_name, address=address,
+                                        identity_num=identity_num, phone=phone, email=email, password=password, role=UserRole.ADMIN, avatar="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703844016/v2depwkhte1trcs0z9q9.jpg"))
+                elif phone.__eq__("987654999"):
+                    db.session.add(User(first_name=first_name, name=last_name, address=address,
+                                        identity_num=identity_num, phone=phone, email=email, password=password, role=UserRole.RECEPTIONIST))
+                else:
+                    db.session.add(User(first_name=first_name, name=last_name, address=address,
+                                        identity_num=identity_num, phone=phone, email=email, password=password))
+
             db.session.commit()
 
-        password = str(hashlib.md5("Admin@123".encode('utf-8')).hexdigest())
-        db.session.add(User(first_name="vuong", name="pham", address="tayninh",
-                            identity_num="07220300000", phone="0843751500", email="admin@admin.com", password=password, role=UserRole.ADMIN))
-
+        # password = str(hashlib.md5("Admin@123".encode('utf-8')).hexdigest())
+        # db.session.add(User(first_name="vuong", name="pham", address="tayninh",
+        #                     identity_num="07220300000", phone="0843751500", email="admin@admin.com", password=password, role=UserRole.ADMIN))
+        insert_data(db, RoomType, "room-types")
         insert_data(db, Room, "room")
-        insert_data(db, AmenityType, "amenityTypes")
+        insert_data(db, AmenityType, "amenity-types")
         insert_data(db, Amenity, "amenity")
         insert_data(db, AmenityRoom, "amenity-room")
         insert_data(db, Booking, "booking")
         insert_data(db, Image, "image")
+        insert_data(db, Guest, 'guest')
+        insert_data(db, Policy, 'policy')
+
+        with open(f'data/booking-room.json', encoding='utf-8') as f:
+            items = json.load(f)
+            for item in items:
+                booking = Booking.query.get_or_404(item['booking_id'])
+                room = Room.query.get_or_404(item['room_id'])
+                booking.add_room(room=room)
+        insert_data(db, BookingGuest, 'booking-guest')
+
+        with open(f'data/roomtype-policy.json', encoding='utf-8') as f:
+            items = json.load(f)
+            for item in items:
+                room_type = RoomType.query.get_or_404(item['room_type'])
+                policy = Policy.query.get_or_404(item['policy_id'])
+                room_type.add_policy(policy=policy)
 
         # for i in range(10):
         #     booking = Booking.query.get_or_404(i+1)

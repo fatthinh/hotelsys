@@ -1,6 +1,7 @@
 import models
 import hashlib
 from __init__ import db
+from flask_login import current_user
 from models import User
 
 
@@ -37,15 +38,32 @@ def get_amenity_types():
     return models.AmenityType.query.all()
 
 
+def get_bookings():
+    return models.Booking.query.all()
+
+
+def get_bookings_by_phone(phone):
+    return models.Booking.query.filter(models.Booking.phone.__eq__(phone)).all()
+
+
+def get_booking_by_id(id):
+    return models.Booking.query.get(id)
+
+
 def auth_user(email, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     return models.User.query.filter(models.User.email.__eq__(email.strip()),
                                     models.User.password.__eq__(password)).first()
 
 
+def is_customer():
+    return current_user.role.__eq__(models.UserRole.CUSTOMER)
+
+
 def add_user(email, password, first_name, last_name, phone):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
-    user = models.User(email=email, password=password, first_name=first_name, last_name=last_name, phone=phone)
+    user = models.User(email=email, password=password,
+                       first_name=first_name, last_name=last_name, phone=phone)
     db.session.add(user)
 
 

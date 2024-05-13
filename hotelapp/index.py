@@ -1,16 +1,60 @@
 from __init__ import app, login_manager
 from flask import render_template, request, session, jsonify, redirect, url_for
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from admin import admin
 import dao
 import utils
-from decorators import loggedin
+from decorators import loggedin, staffonly
 from datetime import datetime, timedelta
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/staff/')
+@staffonly
+@login_required
+def staff_index():
+    bookings = dao.get_bookings()
+    return render_template('staff/index.html', bookings=bookings, title="Booking")
+
+
+@app.route('/staff/bookings/<booking_id>')
+@staffonly
+@login_required
+def staff_booking_detail(booking_id):
+    booking = dao.get_booking_by_id(booking_id)
+    print(booking.get_guests())
+    return render_template('staff/detail.html', booking=booking)
+
+
+@app.route('/staff/booking')
+@staffonly
+@login_required
+def staff_booking():
+    check_in = request.args.get('check-in', datetime.today().date().strftime(
+        '%Y-%m-%d'))
+    check_out = request.args.get(
+        'check-out', (datetime.today().date() + timedelta(days=1)).strftime('%Y-%m-%d'))
+    cart = session.get('cart')
+
+    if cart:
+        if check_in != cart['check_in'] or check_out != cart['check_out']:
+            session.pop('cart', default=None)
+
+    rooms = dao.get_room_types()
+    return render_template('staff/booking.html', rooms=rooms, check_in=check_in, check_out=check_out)
+
+
+@app.route('/staff/checkout')
+@staffonly
+@login_required
+def staff_checkout():
+    rooms = dao.get_rooms()
+    room_types = dao.get_room_types()
+    return render_template('staff/checkout.html', rooms=rooms, room_types=room_types, guests=session.get("guests"))
 
 
 @app.route('/book', methods=['post'])
@@ -77,6 +121,12 @@ def logout():
     return redirect('/login')
 
 
+@app.route('/profile')
+def profile():
+    bookings = dao.get_bookings_by_phone("678901234")
+    return render_template('profile.html', bookings=bookings)
+
+
 @app.route('/register', methods=['post'])
 def register():
     if request.method == "POST":
@@ -85,12 +135,12 @@ def register():
         last_name = request.form.get("last_name")
         email = request.form.get("email")
         password = request.form.get("password")
-        user=dao.auth_user(email=email, password=password)
+        user = dao.auth_user(email=email, password=password)
         if user:
             login_user(user)
             return redirect('/')
         dao.add_user(email=email, password=password,
-                        first_name=first_name, last_name=last_name, phone=phone)
+                     first_name=first_name, last_name=last_name, phone=phone)
 
     return render_template('login.html')
 

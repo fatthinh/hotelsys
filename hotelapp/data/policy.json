@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Foreign guest",
+        "details": "return room'price * expense",
+        "expense": 0.5
+    },
+    {
+        "name": "Room's capacity",
+        "details": "if its adults is 2 and total guests greater than it, then return room'price * expense",
+        "expense": 0.25
+    }
+]

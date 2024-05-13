@@ -78,20 +78,22 @@
               /> -->
 
               <div class="user-menu__top">
-                <img
-                  src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1704532184/default-avatar-icon-of-social-media-user-vector_yefjz5.jpg"
-                  alt=""
-                  class="user-menu__avatar"
-                />
+                {%set src =
+                "https://res.cloudinary.com/dzjhqjxqj/image/upload/v1704532184/default-avatar-icon-of-social-media-user-vector_yefjz5.jpg"
+                %} {% if current_user.avatar %} {%set src = current_user.avatar
+                %} {% endif %}
+                <img src="{{src}}" alt="" class="user-menu__avatar" />
                 <div>
-                  <p class="user-menu__name">John Smith</p>
-                  <p>@johnsmith</p>
+                  <p class="user-menu__name">
+                    {{current_user.first_name}} {{current_user.name}}
+                  </p>
+                  <p>{{current_user.email}}</p>
                 </div>
               </div>
 
               <ul class="user-menu__list">
                 <li>
-                  <a href="./profile.html" class="user-menu__link">Profile</a>
+                  <a href="/profile" class="user-menu__link">Profile</a>
                 </li>
                 <li>
                   <a href="#!" class="user-menu__link">Settings</a>

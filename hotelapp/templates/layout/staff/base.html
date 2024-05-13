@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{% endblock %}</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <!-- Styles -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/staff.js') }}"
+    ></script>
+  </head>
+  <body>
+    <div class="app-container">
+      {% block sidebar %} {% include 'layout/staff/sidebar.html' %} {% endblock
+      %}
+      <div class="app-content">
+        <div class="app-content-header">
+          <h1 class="app-content-headerText">{{title}}</h1>
+          <button class="mode-switch" title="Switch Theme">
+            <i class="bx bxs-moon icon"></i>
+          </button>
+          <a href="/staff/booking" class="btn btn--primary btn--small">
+            Add {{title}}
+          </a>
+        </div>
+        <div class="app-content-actions">
+          <input class="search-bar" placeholder="Search..." type="text" />
+          <div class="app-content-actions-wrapper">
+            <div class="filter-button-wrapper">
+              <button class="action-button filter jsFilter">
+                <span>Filter</span><i class="bx bx-filter-alt icon"></i>
+              </button>
+              <div class="filter-menu">
+                <label>Category</label>
+                <select>
+                  <option>All Categories</option>
+                  <option>Furniture</option>
+                  <option>Decoration</option>
+                  <option>Kitchen</option>
+                  <option>Bathroom</option>
+                </select>
+                <label>Status</label>
+                <select>
+                  <option>All Status</option>
+                  <option>Active</option>
+                  <option>Disabled</option>
+                </select>
+                <div class="filter-menu-buttons">
+                  <button class="filter-button reset">Reset</button>
+                  <button class="filter-button apply">Apply</button>
+                </div>
+              </div>
+            </div>
+            <button class="action-button list active" title="List View">
+              <i class="bx bx-list-ul icon"></i>
+            </button>
+            <button class="action-button grid" title="Grid View">
+              <i class="bx bx-grid-alt icon"></i>
+            </button>
+          </div>
+        </div>
+        {% block main required %}{% endblock %}
+      </div>
+    </div>
+
+    <!-- Modal -->
+    {% block modal %}{% endblock %}
+  </body>
+</html>

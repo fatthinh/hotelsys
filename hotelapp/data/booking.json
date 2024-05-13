@@ -3,7 +3,7 @@
     "check_in": "2024-05-17",
     "check_out": "2024-05-19",
     "name": "John Doe",
-    "phone": "12345678901",
+    "phone": "345678901",
     "email": "john.doe@example.com",
     "notes": "Special request: extra towels"
   },
@@ -11,7 +11,7 @@
     "check_in": "2024-05-10",
     "check_out": "2024-05-15",
     "name": "Jane Smith",
-    "phone": "98765432109",
+    "phone": "765432109",
     "email": "jane.smith@example.com",
     "notes": ""
   },
@@ -19,7 +19,7 @@
     "check_in": "2024-05-20",
     "check_out": "2024-05-25",
     "name": "Michael Johnson",
-    "phone": "45678901234",
+    "phone": "678901234",
     "email": "michael.johnson@example.com",
     "notes": "Late check-in requested"
   },
@@ -27,7 +27,7 @@
     "check_in": "2024-06-01",
     "check_out": "2024-06-05",
     "name": "Emily Brown",
-    "phone": "56789012345",
+    "phone": "789012345",
     "email": "emily.brown@example.com",
     "notes": "Birthday celebration"
   },
@@ -35,7 +35,7 @@
     "check_in": "2024-06-10",
     "check_out": "2024-06-15",
     "name": "David Wilson",
-    "phone": "67890123456",
+    "phone": "890123456",
     "email": "david.wilson@example.com",
     "notes": "Early check-out required"
   },
@@ -43,7 +43,7 @@
     "check_in": "2024-06-20",
     "check_out": "2024-06-25",
     "name": "Sarah Martinez",
-    "phone": "78901234567",
+    "phone": "901234567",
     "email": "sarah.martinez@example.com",
     "notes": ""
   },
@@ -51,7 +51,7 @@
     "check_in": "2024-07-01",
     "check_out": "2024-07-07",
     "name": "Christopher Taylor",
-    "phone": "89012345678",
+    "phone": "012345678",
     "email": "christopher.taylor@example.com",
     "notes": "Early breakfast requested"
   },
@@ -59,7 +59,7 @@
     "check_in": "2024-07-10",
     "check_out": "2024-07-15",
     "name": "Jessica Anderson",
-    "phone": "90123456789",
+    "phone": "123456789",
     "email": "jessica.anderson@example.com",
     "notes": "Late check-out requested"
   },
@@ -67,7 +67,7 @@
     "check_in": "2024-07-20",
     "check_out": "2024-07-25",
     "name": "Kevin Thomas",
-    "phone": "01234567890",
+    "phone": "234567890",
     "email": "kevin.thomas@example.com",
     "notes": ""
   },
@@ -75,7 +75,7 @@
     "check_in": "2024-08-01",
     "check_out": "2024-08-05",
     "name": "Amanda Hernandez",
-    "phone": "12345678901",
+    "phone": "345678901",
     "email": "amanda.hernandez@example.com",
     "notes": "Family vacation"
   }
