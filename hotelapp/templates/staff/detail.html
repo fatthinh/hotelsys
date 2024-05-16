@@ -5,9 +5,20 @@
     <div class="row gy-xl-3">
       <div class="col-8 col-xl-12">
         <div class="cart-info">
-          <h1 class="cart-info__heading">Booking information</h1>
+          <div class="cart-info__row">
+            <h1 class="cart-info__heading">
+              {{title}} information ({{booking.invoice.status}})
+            </h1>
+            <a
+              class="cart-info__next-btn btn btn--rounded add-reservation"
+              href="/staff/booking?check-in={{booking.check_in}}&check-out={{booking.check_out}}&booking-id={{booking.id}}"
+            >
+              Add reservation
+            </a>
+          </div>
           <div class="cart-info__separate"></div>
 
+          {% if title == "Booking" %}
           <form class="form" method="post" action="/book" id="booker">
             <div class="booker">
               <div class="form__row">
@@ -91,6 +102,7 @@
           </form>
 
           <div class="cart-info__separate"></div>
+          {% endif %}
 
           <h2 class="cart-info__sub-heading">Guests</h2>
           <div class="form__row">
@@ -216,13 +228,21 @@
             <span>Total</span>
             <span class="total-amount">${{booking.get_total()}}</span>
           </div>
-          <button
-            class="cart-info__next-btn btn btn--primary btn--rounded btn-remove btn--danger"
-            style="width: 100%"
-            type="submit"
-          >
-            Remove
-          </button>
+          <div class="cart-info__row">
+            <button
+              class="cart-info__next-btn btn btn--rounded btn--primary btn-print"
+              style="width: 100%"
+            >
+              Print invoice
+            </button>
+            <button
+              class="cart-info__next-btn btn btn--outline btn-pay js-toggle"
+              style="width: 100%"
+              toggle-target="#payment-confirm"
+            >
+              Pay
+            </button>
+          </div>
         </div>
         <div class="cart-info">
           <h2 class="cart-info__sub-heading">Rooms</h2>
@@ -260,10 +280,68 @@
     </div>
   </div>
 </div>
+
+<!-- Modal: confirm payment -->
+<div id="payment-confirm" class="modal modal--small hide">
+  <div class="modal__content">
+    <p class="modal__text">Are you sure to do this payment?</p>
+    <div class="modal__bottom">
+      <button
+        class="btn btn--small btn--danger modal__btn js-toggle cancel"
+        toggle-target="#payment-confirm"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn btn--small btn--outline modal__btn btn--no-margin confirm"
+        onclick="pay()"
+      >
+        Sure
+      </button>
+    </div>
+  </div>
+  <div class="modal__overlay js-toggle" toggle-target="#payment-confirm"></div>
+</div>
+
 {% endblock %} {% block javascript %}
-<script
-  type="text/javascript"
-  src="{{ url_for('static', filename='js/checkout.js') }}"
-></script>
+<!-- Script to print the content of a div -->
+<script>
+  const pay = () => {
+    fetch("/api/invoice/set-status", {
+      method: "patch",
+      body: JSON.stringify({
+        invoice_id: "{{booking.id}}",
+        invoice_type: "{{title}}",
+        invoice_status: "PAID",
+      }),
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      console.log(res);
+    });
+    $(".cancel").click();
+  };
+
+  $(".btn-print").addEventListener("click", (e) => {
+    fetch("/api/invoice/set-status", {
+      method: "patch",
+      body: JSON.stringify({
+        invoice_id: "{{booking.id}}",
+        invoice_type: "{{title}}",
+        invoice_status: "UNPAID",
+      }),
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      console.log(res);
+    });
+    e.preventDefault();
+    window.print();
+  });
+</script>
 
 {% endblock %} {% block footer%} {% endblock %}

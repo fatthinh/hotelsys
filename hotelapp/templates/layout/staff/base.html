@@ -84,3 +84,13 @@
     {% block modal %}{% endblock %}
   </body>
 </html>
+
+{%block javascript %}
+<script>
+  $$(".sidebar-list-item").forEach((item) => {
+    if (item.dataset.title === "{{title | safe}}") {
+      item.classList.add("active");
+    }
+  });
+</script>
+{% endblock %}

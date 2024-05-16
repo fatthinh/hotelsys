@@ -1,4 +1,4 @@
-from __init__ import app, login_manager
+from __init__ import app, login_manager, Message, mail
 from flask import render_template, request, session, jsonify, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from admin import admin
@@ -27,7 +27,7 @@ def staff_index():
 def staff_booking_detail(booking_id):
     booking = dao.get_booking_by_id(booking_id)
     print(booking.get_guests())
-    return render_template('staff/detail.html', booking=booking)
+    return render_template('staff/detail.html', booking=booking, title="Booking")
 
 
 @app.route('/staff/booking')
@@ -38,14 +38,30 @@ def staff_booking():
         '%Y-%m-%d'))
     check_out = request.args.get(
         'check-out', (datetime.today().date() + timedelta(days=1)).strftime('%Y-%m-%d'))
+    booking_id = request.args.get('booking-id', None)
+
     cart = session.get('cart')
 
     if cart:
         if check_in != cart['check_in'] or check_out != cart['check_out']:
             session.pop('cart', default=None)
 
-    rooms = dao.get_room_types()
-    return render_template('staff/booking.html', rooms=rooms, check_in=check_in, check_out=check_out)
+    if cart == None and booking_id:
+        cart = {
+            "check_in": check_in,
+            "check_out": check_out,
+        }
+
+        booking = dao.get_booking_by_id(booking_id)
+        cart['items'] = [{"room": room.id, "room_type": room.get_room_type().id}
+                         for room in booking.rooms]
+        cart['guests'] = [{"name": guest.get_guest().name, "identity": guest.get_guest(
+        ).identity_num, "is_vietnamese": guest.get_guest().is_vietnamese, "room": guest.room_id} for guest in booking.guests]
+
+        session['cart'] = cart
+
+    room_types = dao.get_room_types()
+    return render_template('staff/booking.html', rooms=room_types, check_in=check_in, check_out=check_out)
 
 
 @app.route('/staff/checkout')
@@ -54,7 +70,23 @@ def staff_booking():
 def staff_checkout():
     rooms = dao.get_rooms()
     room_types = dao.get_room_types()
-    return render_template('staff/checkout.html', rooms=rooms, room_types=room_types, guests=session.get("guests"))
+    return render_template('staff/checkout.html', rooms=rooms, room_types=room_types)
+
+
+@app.route('/staff/reservations')
+@staffonly
+@login_required
+def staff_reservations():
+    reservations = dao.get_reservations()
+    return render_template('staff/reservations.html', reservations=reservations, title="Reservation")
+
+
+@app.route('/staff/reservations/<reservation_id>')
+@staffonly
+@login_required
+def staff_reservation_detail(reservation_id):
+    reservation = dao.get_reservation_by_id(reservation_id)
+    return render_template('staff/detail.html', booking=reservation, title="Reservation")
 
 
 @app.route('/book', methods=['post'])
@@ -67,7 +99,26 @@ def book():
             "notes": request.form.get("notes"),
         }
         try:
-            dao.add_booking(booker, session.get('cart'))
+            booking = dao.add_booking(booker, session.get('cart'))
+            msg = Message('WHATS UP MAN', sender='pthinh.lama@gmail.com',
+                          recipients=[booking.email])
+            msg.html = render_template(
+                "booking-successful.html", booking=booking)
+            mail.send(msg)
+        except Exception as ex:
+            print(ex)
+            return jsonify({'status': 500})
+        else:
+            del session['cart']
+
+    return render_template('index.html')
+
+
+@app.route('/reservate', methods=['post'])
+def reservate():
+    if request.method == "POST":
+        try:
+            dao.add_reservation(session.get('cart'))
         except Exception as ex:
             print(ex)
             return jsonify({'status': 500})
@@ -97,7 +148,7 @@ def booking():
 def checkout():
     rooms = dao.get_rooms()
     room_types = dao.get_room_types()
-    return render_template('checkout.html', rooms=rooms, room_types=room_types, guests=session.get("guests"))
+    return render_template('checkout.html', rooms=rooms, room_types=room_types)
 
 
 @app.route('/login', methods=['get', 'post'])
@@ -111,7 +162,6 @@ def login():
             login_user(user)
             next = request.args.get('next')
             return redirect(next if next else '/')
-
     return render_template('login.html')
 
 
@@ -187,14 +237,6 @@ def add_to_cart():
     room_type = dao.get_room_type_by_id(id)
     rooms = room_type.check_available(cart['check_in'], cart['check_out'])
 
-    # if any(item['id'] == id for item in cart['items']):
-    #     [item.update({'quantity': item['quantity'] + 1})
-    #      for item in cart['items']
-    #      if item['id'] == id and
-    #      item['quantity'] < len(room_type.check_available(cart['check_in'], cart['check_out']))]
-    # else:
-    #     cart['items'].append({"id": id, "quantity": 1, "rooms": rooms})
-
     index = 0
     while (index < len(rooms) and any(item['room'] == rooms[index].id for item in cart['items'])):
         index += 1
@@ -202,8 +244,6 @@ def add_to_cart():
     if index < len(rooms):
         cart['items'].append(
             {"room": rooms[index].id, "room_type": room_type.id})
-
-    print(cart)
     session['cart'] = cart
 
     return jsonify(get_cart_total(cart))
@@ -277,9 +317,6 @@ def add_guest_info():
 
     cart['guests'] = guests
     session['cart'] = cart
-
-    print(session['cart'])
-
     return jsonify({})
 
 
@@ -289,7 +326,6 @@ def get_guests_info():
     guests = cart.get('guests')
 
     if guests:
-        print(guests)
         return jsonify(guests)
     return jsonify({})
 
@@ -304,6 +340,17 @@ def remove_guest_info(guest_id):
 
     session['cart'] = cart
     return jsonify({})
+
+
+@app.route('/api/invoice/set-status', methods=['patch'])
+def set_invoice_status():
+    invoice_id = request.json.get('invoice_id', None)
+    invoice_type = str(request.json.get('invoice_type', None))
+    invoice_status = str(request.json.get('invoice_status', None))
+    dao.set_invoice_status(
+        invoice_id=invoice_id, invoice_type=invoice_type, status=invoice_status)
+
+    return jsonify({"msg": "ok"})
 
 
 @login_manager.user_loader

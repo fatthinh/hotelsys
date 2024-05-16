@@ -167,7 +167,7 @@ const renderGuests = () => {
       guestList.innerHTML = "";
       if (guests.length) {
         guests
-          .filter((guest) => guest.room === room_id)
+          .filter((guest) => parseInt(guest.room) === parseInt(room_id))
           .forEach((guest) => {
             guestList.innerHTML += ` <li class="guest-item" data-id="${guest.identity}">
       <div class="form__row">
@@ -269,6 +269,7 @@ const initCheckout = () => {
         });
         renderGuests();
       }, 500);
+      renderGuests();
     });
 };
 

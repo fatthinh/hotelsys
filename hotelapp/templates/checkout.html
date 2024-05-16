@@ -166,9 +166,12 @@ session.get("cart")['items'] %}
     </div>
   </div>
 </div>
+
 {% endif %} {% endblock %} {% block javascript %}
+
 <script
   type="text/javascript"
   src="{{ url_for('static', filename='js/checkout.js') }}"
 ></script>
+
 {% endblock %}

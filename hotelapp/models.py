@@ -1,5 +1,5 @@
 from __init__ import db, app
-from sqlalchemy import Column, String, Integer, ForeignKey, Float, Date, Boolean, DateTime, Enum, Double, Table, BINARY, Text
+from sqlalchemy import Column, String, Integer, ForeignKey, Float, Date, Boolean, DateTime, Enum, Double, Table, BINARY, Text, event
 from datetime import datetime, timedelta
 from sqlalchemy.orm import relationship
 from enum import Enum as Enumeration
@@ -35,6 +35,19 @@ class Rating(Enumeration):
     GOOD = 3
     VERY_GOOD = 4
     EXCELLENT = 5
+
+
+class BookingStatus(Enumeration):
+    CONFIRMED = 1
+    CHECKED_IN = 2
+    CHECKED_OUT = 3
+    CANCELED = 4
+
+
+class InvoiceStatus(Enumeration):
+    UNPAID = 1
+    PAID = 2
+    PENDING = 3
 
 
 class Person(db.Model):
@@ -193,7 +206,7 @@ class BaseForm(db.Model):
     id = Column(Integer, autoincrement=True,  primary_key=True)
     check_in = Column(Date, nullable=False, default=datetime.now)
     check_out = Column(Date, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
 
 
 class Booking(BaseForm):
@@ -204,12 +217,51 @@ class Booking(BaseForm):
     receptionist = Column(Integer, ForeignKey(User.id))
     rooms = relationship(Room, secondary="booking_room", backref='bookings')
     guests = relationship("BookingGuest", backref="bookings")
+    status = Column(Enum(BookingStatus), default=BookingStatus.CONFIRMED)
+    reservation = relationship("Reservation", uselist=False)
+    invoice = relationship("BookingInvoice", lazy=True, uselist=False)
 
     def add_room(self, room):
         self.rooms.append(room)
 
     def remove_room(self, room):
         self.rooms.remove(room)
+
+    def get_guests(self):
+        return self.guests
+
+    def get_estimated_total(self):
+        return sum(room.get_price() for room in self.rooms)
+
+    def get_total(self):
+        expenses = 0
+        for room in self.rooms:
+            expenses += sum(expense['expense']
+                            for expense in room.get_expense(self.id))
+
+        return sum(room.get_price() for room in self.rooms) + expenses
+
+    def set_invoice_status(self, status):
+        self.invoice.status = status
+        db.session.commit()
+
+    def create_invoice(self, receptionist):
+        invoice = BookingInvoice(amount=self.get_total(
+        ), booking=self.id, receptionist=receptionist)
+        db.session.add(invoice)
+        db.session.commit()
+
+
+class Reservation(BaseForm):
+    booking = Column(Integer, ForeignKey(Booking.id), unique=True)
+    receptionist = Column(Integer, ForeignKey(User.id))
+    rooms = relationship(Room, secondary="reservation_room",
+                         backref='reservations')
+    guests = relationship("ReservationGuest", backref="reservations")
+    invoice = relationship("ReservationInvoice", lazy=True, uselist=False)
+
+    def add_room(self, room):
+        self.rooms.append(room)
 
     def get_guests(self):
         return self.guests
@@ -222,14 +274,15 @@ class Booking(BaseForm):
 
         return sum(room.get_price() for room in self.rooms) + expenses
 
+    def set_invoice_status(self, status):
+        self.invoice.status = status
+        db.session.commit()
 
-class Reservation(BaseForm):
-    booking = Column(Integer, ForeignKey(Booking.id), unique=True)
-    receptionist = Column(Integer, ForeignKey(User.id))
-    rooms = relationship(Room, secondary="reservation_room",
-                         backref='reservations')
-    guests = relationship(
-        Guest, secondary="reservation_guest", backref="reservations")
+    def create_invoice(self, receptionist):
+        invoice = ReservationInvoice(amount=self.get_total(
+        ), reservation=self.id, receptionist=receptionist)
+        db.session.add(invoice)
+        db.session.commit()
 
 
 booking_room = Table("booking_room",
@@ -251,9 +304,10 @@ class BookingGuest(db.Model):
     booking_id = Column(Integer, ForeignKey(Booking.id), nullable=False)
     guest_id = Column(Integer, ForeignKey(Guest.id), nullable=False)
     room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
+    guest = relationship("Guest", backref="bookings")
 
     def get_guest(self):
-        return Guest.query.get(self.guest_id)
+        return self.guest
 
     def get_room(self):
         return Room.query.get(self.room_id)
@@ -266,19 +320,26 @@ class ReservationGuest(db.Model):
     guest_id = Column(Integer, ForeignKey(Guest.id), nullable=False)
     room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
 
+    def get_guest(self):
+        return Guest.query.get(self.guest_id)
+
+    def get_room(self):
+        return Room.query.get(self.room_id)
+
 
 class Invoice(db.Model):
     __abstract__ = True
     receptionist = Column(Integer, ForeignKey(User.id))
     amount = Column(Double, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
+    status = Column(Enum(InvoiceStatus), default=InvoiceStatus.PENDING)
 
 
-class BookingInvoice(db.Model):
+class BookingInvoice(Invoice):
     booking = Column(Integer, ForeignKey(Booking.id), primary_key=True)
 
 
-class RevervationInvoice(db.Model):
+class ReservationInvoice(Invoice):
     reservation = Column(Integer, ForeignKey(Reservation.id), primary_key=True)
 
 
@@ -380,11 +441,11 @@ if __name__ == "__main__":
         insert_data(db, AmenityType, "amenity-types")
         insert_data(db, Amenity, "amenity")
         insert_data(db, AmenityRoom, "amenity-room")
-        insert_data(db, Booking, "booking")
         insert_data(db, Image, "image")
         insert_data(db, Guest, 'guest')
         insert_data(db, Policy, 'policy')
 
+        insert_data(db, Booking, "booking")
         with open(f'data/booking-room.json', encoding='utf-8') as f:
             items = json.load(f)
             for item in items:
@@ -393,6 +454,16 @@ if __name__ == "__main__":
                 booking.add_room(room=room)
         insert_data(db, BookingGuest, 'booking-guest')
 
+        insert_data(db, Reservation, "reservation")
+        with open(f'data/reservation-room.json', encoding='utf-8') as f:
+            items = json.load(f)
+            for item in items:
+                reservation = Reservation.query.get_or_404(
+                    item['reservation_id'])
+                room = Room.query.get_or_404(item['room_id'])
+                reservation.add_room(room=room)
+        insert_data(db, ReservationGuest, 'reservation-guest')
+
         with open(f'data/roomtype-policy.json', encoding='utf-8') as f:
             items = json.load(f)
             for item in items:
@@ -400,6 +471,11 @@ if __name__ == "__main__":
                 policy = Policy.query.get_or_404(item['policy_id'])
                 room_type.add_policy(policy=policy)
 
+        for booking in Booking.query.all():
+            booking.create_invoice(2)
+
+        for reservation in Reservation.query.all():
+            reservation.create_invoice(2)
         # for i in range(10):
         #     booking = Booking.query.get_or_404(i+1)
         #     for y in range(2):

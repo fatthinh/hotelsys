@@ -2,7 +2,7 @@ from flask import Flask
 from urllib.parse import quote
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-
+from flask_mail import Mail, Message
 
 app = Flask(__name__, template_folder='./templates', static_folder='./static')
 
@@ -15,6 +15,14 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 8
 app.config["SESSION_COOKIE_HTTPONLY"] = False
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'pthinh.lama@gmail.com'
+app.config['MAIL_PASSWORD'] = 'hqdf zduc bsyg eixo'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
 login_manager = LoginManager(app)
+mail = Mail(app)
 
 db = SQLAlchemy(app)

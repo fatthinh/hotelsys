@@ -75,6 +75,9 @@
     line-height: 144.444%;
   }
 
+  &__row > .hide {
+    display: none;
+  }
   &__row {
     display: flex;
     align-items: center;

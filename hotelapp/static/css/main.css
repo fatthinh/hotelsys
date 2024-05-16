@@ -1580,6 +1580,9 @@ html {
   font-size: 20px;
 }
 
+.form.hide {
+  display: none;
+}
 .form:has(:invalid) .form__submit-btn {
   opacity: 0.5;
   pointer-events: none;
@@ -2070,6 +2073,9 @@ html {
   font-size: 1.8rem;
   font-weight: 500;
   line-height: 144.444%;
+}
+.cart-info__row > .hide {
+  display: none;
 }
 .cart-info__row {
   display: flex;
@@ -4396,4 +4402,10 @@ filter-menu select {
   margin-top: 6px;
   font-size: 1.4rem;
   line-height: 142.857%;
+}
+
+@media print {
+  .btn-print, .btn-pay {
+    display: none;
+  }
 }

@@ -92,6 +92,11 @@
               </div>
 
               <ul class="user-menu__list">
+                {% if current_user.role | string != "UserRole.CUSTOMER" %}
+                <li>
+                  <a href="/staff" class="user-menu__link">Staff</a>
+                </li>
+                {% endif %}
                 <li>
                   <a href="/profile" class="user-menu__link">Profile</a>
                 </li>
