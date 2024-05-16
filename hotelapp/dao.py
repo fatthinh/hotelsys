@@ -121,8 +121,10 @@ def add_booking(booker, cart):
 
 def add_reservation(cart):
     if cart['guests'] and cart['items']:
+        booking_id = cart["booking_id"]
         reservation = Reservation(
-            check_out=cart['check_out'], check_in=cart['check_in'], receptionist=current_user.id)
+            check_out=cart['check_out'], check_in=cart['check_in'], receptionist=current_user.id, booking=booking_id)
+
         db.session.add(reservation)
 
         for guest_data in cart['guests']:
@@ -146,6 +148,9 @@ def add_reservation(cart):
         for room_data in cart['items']:
             room = get_room_by_id(room_data['room'])
             reservation.add_room(room=room)
+
+        # create reservation invoice
+        reservation.create_invoice(receptionist=current_user.id)
 
         db.session.commit()
         return reservation

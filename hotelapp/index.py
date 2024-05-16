@@ -46,7 +46,7 @@ def staff_booking():
         if check_in != cart['check_in'] or check_out != cart['check_out']:
             session.pop('cart', default=None)
 
-    if cart == None and booking_id:
+    if booking_id:
         cart = {
             "check_in": check_in,
             "check_out": check_out,
@@ -57,7 +57,7 @@ def staff_booking():
                          for room in booking.rooms]
         cart['guests'] = [{"name": guest.get_guest().name, "identity": guest.get_guest(
         ).identity_num, "is_vietnamese": guest.get_guest().is_vietnamese, "room": guest.room_id} for guest in booking.guests]
-
+        cart['booking_id'] = booking_id
         session['cart'] = cart
 
     room_types = dao.get_room_types()
