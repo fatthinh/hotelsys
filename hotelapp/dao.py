@@ -2,6 +2,8 @@ import hashlib
 from __init__ import db
 from flask_login import current_user
 from models import *
+from sqlalchemy import extract, func
+from datetime import datetime
 
 
 def get_room_types():
@@ -192,6 +194,112 @@ def load_room_detail(room_id):
         })
 
     return room_type_info
+
+
+def revenue_by_month(month=None, year=None):
+    current_year = datetime.now().year
+
+    if year is None and month is None:
+        # Không có năm và tháng, thống kê theo năm hiện tại
+        year = current_year
+        filter_criteria = [extract('year', Reservation.check_in) == year]
+    elif year is not None and month is None:
+        # Có năm, không có tháng -> thống kê theo năm
+        filter_criteria = [extract('year', Reservation.check_in) == year]
+    elif year is not None and month is not None:
+        # Có năm và có tháng -> thống kê theo tháng và năm
+        filter_criteria = [
+            extract('month', Reservation.check_in) == month,
+            extract('year', Reservation.check_in) == year
+        ]
+    elif year is None and month is not None:
+        # Có tháng, không có năm -> thống kê theo tháng của năm hiện tại
+        year = current_year
+        filter_criteria = [
+            extract('month', Reservation.check_in) == month,
+            extract('year', Reservation.check_in) == year
+        ]
+
+    results = db.session.query(
+        RoomType.name.label('room_type'),
+        func.count(Reservation.id).label('num_reservations'),
+        func.sum(ReservationInvoice.amount).label('total_revenue')
+    ).select_from(Reservation).join(
+        Reservation.rooms).join(
+        RoomType, Room.room_type == RoomType.id).join(
+        ReservationInvoice, Reservation.id == ReservationInvoice.reservation
+    ).filter(
+        *filter_criteria
+    ).group_by(RoomType.name).all()
+
+    statistics = []
+    for result in results:
+        statistics.append({
+            'room_type': result.room_type,
+            'num_reservations': result.num_reservations,
+            'total_revenue': result.total_revenue
+        })
+
+    return statistics
+
+
+def get_num_days_in_month(month, year): # lấy ngày của tháng
+    if month in [4, 6, 9, 11]:
+        return 30
+    elif month == 2:
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            return 29
+        else:
+            return 28
+    else:
+        return 31
+
+
+def room_utilization(month=None, year=None):
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
+    if year is None and month is None:
+        # Không có năm và tháng, thống kê theo năm hiện tại
+        year = current_year
+        month = current_month
+    elif year is not None and month is None:
+        # Có năm, không có tháng
+        month = None
+    elif year is None and month is not None:
+        # Có tháng, không có năm
+        year = current_year
+
+    if month is not None:
+        num_days_in_month = get_num_days_in_month(month, year)
+        filter_criteria = [
+            extract('month', Reservation.check_in) == month,
+            extract('year', Reservation.check_in) == year
+        ]
+    else:
+        num_days_in_month = 365 if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0) else 364
+        filter_criteria = [
+            extract('year', Reservation.check_in) == year
+        ]
+
+    results = db.session.query(
+        Room.name,
+        func.sum(func.datediff(Reservation.check_out, Reservation.check_in)).label('num_days_reserved')
+    ).outerjoin(
+        Reservation, Room.id == Reservation.room_id
+    ).filter(
+        *filter_criteria
+    ).group_by(Room.name).all()
+
+    room_utilization_data = []
+    for result in results:
+        utilization_rate = (result.num_days_reserved / num_days_in_month) * 100
+        room_utilization_data.append({
+            'room_name': result.name,
+            'num_days_reserved': result.num_days_reserved,
+            'utilization_rate': utilization_rate
+        })
+    return room_utilization_data
 
 
 def auth_user(email, password):

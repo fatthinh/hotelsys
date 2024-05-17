@@ -1,9 +1,11 @@
-from flask import redirect
+from datetime import datetime
+from flask import redirect, request
 from flask_admin import Admin, expose, AdminIndexView, BaseView
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user, logout_user
 from __init__ import app, db
 from models import UserRole, RoomType, Room, AmenityType, Amenity, Policy, Service
+import dao
 
 
 class AuthenticatedView(ModelView):
@@ -70,6 +72,21 @@ class MyServiceView(AuthenticatedView):
     column_editable_list = ['name', 'details', 'price', 'unit']
 
 
+class MyAdminStatsView(BaseView):
+    @expose('/')
+    def index(self):
+        stats_revenue = dao.revenue_by_month(month=request.args.get('month'),
+                                             year=request.args.get('year'))
+        room_utilization_stats = dao.room_utilization(month=request.args.get('month'),
+                                             year=request.args.get('year'))
+
+        return self.render('admin/stats.html', stats_revenue=stats_revenue,
+                           room_utilization_stats=room_utilization_stats)
+
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+
 admin = Admin(app, name='Hotel Admin Center', template_mode='bootstrap4')
 
 admin.add_view(MyRoomTypeView(RoomType, db.session))
@@ -78,5 +95,6 @@ admin.add_view(MyAmenityTypeView(AmenityType, db.session))
 admin.add_view(MyAmenityView(Amenity, db.session))
 admin.add_view(MyPolicyView(Policy, db.session))
 admin.add_view(MyServiceView(Service, db.session))
+admin.add_view(MyAdminStatsView(name='Stats'))
 
 admin.add_view(LogoutView(name='Logout'))
