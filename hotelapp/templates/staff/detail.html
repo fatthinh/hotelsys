@@ -9,12 +9,14 @@
             <h1 class="cart-info__heading">
               {{title}} information ({{booking.invoice.status}})
             </h1>
+            {% if title == "Booking" %}
             <a
               class="cart-info__next-btn btn btn--rounded add-reservation"
               href="/staff/booking?check-in={{booking.check_in}}&check-out={{booking.check_out}}&booking-id={{booking.id}}"
             >
               Add reservation
             </a>
+            {% endif %}
           </div>
           <div class="cart-info__separate"></div>
 

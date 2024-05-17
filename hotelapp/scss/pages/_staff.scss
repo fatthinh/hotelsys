@@ -3,36 +3,6 @@
   box-sizing: border-box;
 }
 
-:root {
-  --app-bg: #fff;
-  --sidebar: #f3f6fd;
-  --app-content-main-color: #1f1c2e;
-  --app-content-secondary-color: #f3f6fd;
-
-  --sidebar-link: #1f1c2e;
-  --sidebar-hover-link: rgba(195, 207, 244, 0.5);
-  --sidebar-active-link: rgba(195, 207, 244, 1);
-  --sidebar-main-color: #1f1c2e;
-  --filter-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  --action-color: #2869ff;
-  --action-color-hover: #6291fd;
-}
-
-.dark:root {
-  --app-bg: #101827;
-  --sidebar: rgba(21, 30, 47, 1);
-  --sidebar-main-color: #fff;
-  --table-border: #1a2131;
-  --table-header: #1a2131;
-  --sidebar-link: #fff;
-  --sidebar-active-link: #1d283c;
-  --sidebar-hover-link: #1a2539;
-  --app-content-main-color: #fff;
-  --app-content-secondary-color: #1d283c;
-  --filter-reset: #2c394f;
-  --filter-shadow: rgba(16, 24, 39, 0.8) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-}
 body,
 html {
   margin: 0;
@@ -44,7 +14,7 @@ html {
 body {
   // overflow: hidden;
   // font-family: "Poppins", sans-serif;
-  // background-color: var(--app-bg);
+  // background-color: var(--body-bg);
   // -webkit-font-smoothing: antialiased;
   // -moz-osx-font-smoothing: grayscale;
 }
@@ -66,7 +36,7 @@ body {
   flex-basis: 200px;
   max-width: 200px;
   flex-shrink: 0;
-  background-color: var(--sidebar);
+  background-color: var(--sidebar-bg-color);
   display: flex;
   flex-direction: column;
 }
@@ -143,6 +113,7 @@ body {
   align-items: center;
   padding: 16px;
   margin-top: auto;
+  background-color: var(--sidebar-bg-color) !important;
 }
 .account-info-picture {
   width: 32px;
@@ -189,7 +160,7 @@ body {
 
 .app-content {
   padding: 16px;
-  background-color: var(--app-bg);
+  background-color: #fff;
   height: 100%;
   flex: 1;
   max-height: 100%;
@@ -265,9 +236,7 @@ body {
   max-width: 320px;
   transition: 0.2s;
 }
-.dark .search-bar {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-}
+
 .search-bar:placeholder {
   color: var(--app-content-main-color);
 }

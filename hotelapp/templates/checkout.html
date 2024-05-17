@@ -106,7 +106,8 @@ session.get("cart")['items'] %}
 
           <div class="form__group">
             <button
-              class="btn btn--small btn--primary js-more-guest"
+              class="btn btn--small btn--primary js-toggle js-more-guest"
+              toggle-target="#new-guest-modal"
               style="width: 100%"
             >
               More guest
@@ -167,6 +168,66 @@ session.get("cart")['items'] %}
   </div>
 </div>
 
+<!-- Modal: Guest -->
+<div id="new-guest-modal" class="modal hide">
+  <div class="modal__content">
+    <form class="form">
+      <h2 class="modal__heading">New Guest</h2>
+      <div class="modal__body">
+        <div class="form__group">
+          <div class="form__text-input form__text-input--small">
+            <input
+              type="text"
+              placeholder="Name"
+              class="form__input modal--guest-name"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form__row">
+          <div class="form__group">
+            <div class="form__text-input form__text-input--small">
+              <input
+                type="text"
+                placeholder="Identity number"
+                class="form__input modal--guest-id"
+                pattern="[0-9]{12}"
+                maxlength="12"
+                required
+              />
+            </div>
+          </div>
+          <div class="form__group form__group--inline" style="flex: 0.2">
+            <label class="form__checkbox">
+              <input
+                type="checkbox"
+                class="form__checkbox-input d-none modal--guest-vietnamese"
+                checked
+              />
+              <span class="form__checkbox-label">Vietnamese</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal__bottom">
+        <button
+          class="btn btn--small btn--outline modal__btn js-toggle modal-cancel"
+          toggle-target="#new-guest-modal"
+          ="#new-guest-modal"
+        >
+          Cancel
+        </button>
+        <button
+          class="btn btn--small btn--primary modal__btn btn--create-guest"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="modal__overlay"></div>
+</div>
 {% endif %} {% endblock %} {% block javascript %}
 
 <script

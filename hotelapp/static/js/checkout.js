@@ -6,75 +6,48 @@ const cartItemList = $(".cart-info__list");
 const totalAmount = $(".total-amount");
 const totalRooms = $(".total-rooms");
 
-$(".js-more-guest").addEventListener("click", () => {
-  const newItem = document.createElement("li");
-  newItem.classList.add("guest-item");
+$(".js-more-guest").addEventListener("click", (e) => {
+  if (guestList.children.length === 3) console.log("heloo");
+});
 
-  newItem.innerHTML = `
-  <div class="form__row">
-    <div class="form__group">
-      <div class="form__text-input form__text-input--small">
-        <input
-          type="text"
-          placeholder="Name"
-          class="form__input guest-name"
-        />
-      </div>
-    </div>
+$(".btn--create-guest").addEventListener("click", (e) => {
+  const name = $(".modal--guest-name").checkValidity();
+  const id = $(".modal--guest-id").checkValidity();
+  const isVietnamese = $(".modal--guest-vietnamese").checked;
+  if (name && id) {
+    e.preventDefault();
+    fetch("/api/guests", {
+      method: "post",
+      body: JSON.stringify({
+        identity: $(".modal--guest-id").value,
+        name: $(".modal--guest-name").value,
+        room_id: $(".guest-list").dataset.room,
+        is_vietnamese: isVietnamese,
+      }),
 
-    <div class="form__group">
-      <div class="form__text-input form__text-input--small">
-        <input
-          type="text"
-          placeholder="Identity number"
-          class="form__input guest-id"
-          pattern="[0-9]{12}"
-          maxlength="12"
-          required
-        />
-      </div>
-    </div>
-    <div class="form__group form__group--inline" style="flex: 0.4">
-      <label class="form__checkbox">
-        <input
-          type="checkbox"
-          class="form__checkbox-input d-none guest-vietnamese"
-          checked
-        />
-        <span class="form__checkbox-label">Vietnamese</span>
-      </label>
-    </div>
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(
+            `Failed to delete room from cart. Status: ${res.status}`
+          );
+        }
+        return res.json();
+      })
+      .finally(() => {
+        loading();
+        $(".modal-cancel").click();
+        queryRemoveBtn();
+        renderGuests();
 
-    <div class="form__group form__group--inline" style="flex: 0.4">
-    <label class="form__checkbox">
-      <input
-        type="checkbox"
-        class="form__checkbox-input d-none info-saved"
-      />
-      <span class="form__checkbox-label">Done</span>
-    </label>
-  </div>
-
-    <div class="form__group" style="flex: 0.2">
-      <button
-        class="btn btn--small btn--danger js-remove-guest"
-      >
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    </div>
-  </div>`;
-
-  const adults = roomTypes.find(
-    (type) =>
-      type.id ===
-      rooms.find((room) => room.id === parseInt(guestList.dataset.room))
-        .room_type
-  ).adults;
-
-  if (guestList.children.length < adults + 1) guestList.appendChild(newItem);
-
-  queryRemoveBtn();
-  addGuest();
+        $(".modal--guest-id").value = "";
+        $(".modal--guest-name").value = "";
+        $(".modal--guest-vietnamese").checked = true;
+      });
+  }
 });
 
 const queryRemoveBtn = () => {
@@ -102,60 +75,10 @@ const addCartToHTML = () => {
 
       const info = roomTypes?.find((room) => room.id === item.room_type);
       const roomName = rooms?.find((room) => room.id === item.room)?.name;
-
-      newItem.innerHTML = `
-      <div class="cart-item__img">
-        <img
-          src="https://res.cloudinary.com/dzjhqjxqj/image/upload/v1703404014/samples/chair-and-coffee-table.jpg"
-          class="cart-item__thumb"
-          alt=""
-          style="height: 120px"
-        />
-      </div>
-      <div class="cart-item__info">
-        <div class="cart-item__info-left">
-          <h3 class="cart-item__title">
-          ${info.name}
-          </h3>
-          <p class="cart-item__price-wrap">Room: ${roomName}</p>
-
-        </div>
-        <div class="cart-item__info-right">
-          <p class="cart-item__total-price">$${info.price}</p>
-          <button class="btn btn--small cart-item__ctrl"><i class="fa-solid fa-circle-info"></i></button>
-        </div>
-      </div>
-                  `;
+      newItem.innerHTML = cartItemComponent(roomName, info);
       cartItemList.appendChild(newItem);
     });
   }
-};
-
-const addGuest = () => {
-  $$(".info-saved").forEach((item) => {
-    item.addEventListener("change", () => {
-      if (item.checked) {
-        const target = item.closest(".guest-item");
-        const name = target.querySelector(".guest-name").value;
-        const identity = target.querySelector(".guest-id").value;
-        const isVietnamese = item.checked;
-
-        fetch("/api/guests", {
-          method: "post",
-          body: JSON.stringify({
-            identity: identity,
-            name: name,
-            room_id: $(".guest-list").dataset.room,
-            is_vietnamese: isVietnamese,
-          }),
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      }
-    });
-  });
 };
 
 const renderGuests = () => {
@@ -169,63 +92,7 @@ const renderGuests = () => {
         guests
           .filter((guest) => parseInt(guest.room) === parseInt(room_id))
           .forEach((guest) => {
-            guestList.innerHTML += ` <li class="guest-item" data-id="${guest.identity}">
-      <div class="form__row">
-        <div class="form__group">
-          <div class="form__text-input form__text-input--small">
-            <input
-              type="text"
-              placeholder="Name"
-              class="form__input guest-name"
-              value=${guest?.name}
-            />
-          </div>
-        </div>
-
-        <div class="form__group">
-          <div class="form__text-input form__text-input--small">
-            <input
-              type="text"
-              placeholder="Identity number"
-              class="form__input guest-id"
-              pattern="[0-9]{12}"
-              maxlength="12"
-              required
-              value=${guest?.identity}
-            />
-          </div>
-        </div>
-        <div class="form__group form__group--inline" style="flex: 0.4">
-          <label class="form__checkbox">
-            <input
-              type="checkbox"
-              class="form__checkbox-input d-none guest-vietnamese"
-              checked
-            />
-            <span class="form__checkbox-label">Vietnamese</span>
-          </label>
-        </div>
-
-        <div class="form__group form__group--inline" style="flex: 0.4">
-          <label class="form__checkbox">
-            <input
-              type="checkbox"
-              class="form__checkbox-input d-none info-saved"
-              checked
-            />
-            <span class="form__checkbox-label">Saved</span>
-          </label>
-        </div>
-
-        <div class="form__group" style="flex: 0.2">
-          <button
-            class="btn btn--small btn--danger js-remove-guest"
-          >
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    </li>`;
+            guestList.innerHTML += guestComponent(guest);
           });
         queryRemoveBtn();
       }
@@ -274,3 +141,77 @@ const initCheckout = () => {
 };
 
 initCheckout();
+
+const cartItemComponent = (roomName, info) => {
+  return `
+    <div class="cart-item__img">
+      <img
+        src="/static/img/${info.images[0]}"
+        class="cart-item__thumb"
+        alt=""
+        style="width: 88px; height: 120px"
+      />
+    </div>
+    <div class="cart-item__info">
+      <div class="cart-item__info-left">
+        <h3 class="cart-item__title">
+        ${info.name}
+        </h3>
+        <p class="cart-item__price-wrap">Room: ${roomName} | ${info.adults} adults</p>
+      </div>
+      <div class="cart-item__info-right">
+        <p class="cart-item__total-price">$${info.price}</p>
+        <button class="btn btn--small cart-item__ctrl"><i class="fa-solid fa-circle-info"></i></button>
+      </div>
+    </div> `;
+};
+
+const guestComponent = (guest) => {
+  return ` <li class="guest-item" data-id="${guest.identity}">
+  <div class="form__row">
+    <div class="form__group">
+      <div class="form__text-input form__text-input--small">
+        <input
+          type="text"
+          placeholder="Name"
+          class="form__input guest-name"
+          value=${guest?.name}
+        />
+      </div>
+    </div>
+
+    <div class="form__group">
+      <div class="form__text-input form__text-input--small">
+        <input
+          type="text"
+          placeholder="Identity number"
+          class="form__input guest-id"
+          pattern="[0-9]{12}"
+          maxlength="12"
+          required
+          value=${guest?.identity}
+        />
+      </div>
+    </div>
+    <div class="form__group form__group--inline" style="flex: 0.4">
+      <label class="form__checkbox">
+        <input
+          type="checkbox"
+          class="form__checkbox-input d-none guest-vietnamese"
+          checked
+        />
+        <span class="form__checkbox-label">Vietnamese</span>
+      </label>
+    </div>
+
+
+    <div class="form__group" style="flex: 0.2">
+      <button
+        class="btn btn--small btn--danger js-remove-guest"
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</li>`;
+};

@@ -1,5 +1,6 @@
 {% extends 'layout/default/base.html' %} {% block title %} Rooms {% endblock %}
-{% block content %}
+{% block header %} {% endblock %} {% block content %}
+
 <div class="alert success">
   <strong
     ><i
@@ -13,14 +14,6 @@
     ></i
   ></strong>
   Added to cart!
-</div>
-
-<div class="breadcrumb">
-  <div class="wrapper">
-    <div class="content">
-      <h1 style="font-size: 42px">OUR ROOMS</h1>
-    </div>
-  </div>
 </div>
 
 <div class="container" style="margin-top: 30px">
@@ -75,6 +68,14 @@
       <div class="room-detail hide" id="room-detail"></div>
     </div>
     <div class="col-4 check-available">
+      <button
+        class="btn btn--text"
+        style="margin-left: auto"
+        onclick="history.back()"
+      >
+        <span><i class="fa-solid fa-chevron-left"></i></span>
+        <span>Back</span>
+      </button>
       <form action="" class="form">
         <div class="form__group">
           <label for="name" class="form__label form__label--small">
@@ -174,12 +175,7 @@
               <span>Estimated Total</span>
               <span class="total"></span>
             </div>
-            <a
-              href="/checkout"
-              class="cart-info__next-btn btn btn--primary btn--rounded"
-            >
-              Continue to checkout
-            </a>
+            {% block tocheckout %}{% endblock %}
           </div>
         </div>
       </form>
@@ -209,44 +205,45 @@
     <div class="modal__overlay js-toggle" toggle-target="#delete-confirm"></div>
   </div>
 
-  {% endblock %} {% block javascript %}
-  <script
-    type="text/javascript"
-    src="{{ url_for('static', filename='js/booking.js') }}"
-  ></script>
-
-  <script>
-    const checkIn = $("#check-in");
-    const checkOut = $("#check-out");
-    checkIn.value = "{{ check_in  }}";
-    checkOut.value = "{{ check_out }}";
-
-    const minDate = new Date();
-    const maxDate = new Date();
-    checkIn.setAttribute(
-      "max",
-      `${maxDate.getFullYear()}-${format(maxDate.getMonth() + 2)}-${format(
-        maxDate.getDate()
-      )}`
-    );
-
-    checkIn.setAttribute(
-      "min",
-      `${minDate.getFullYear()}-${format(minDate.getMonth() + 1)}-${format(
-        minDate.getDate()
-      )}`
-    );
-
-    checkIn.addEventListener("change", () => {
-      if (checkIn.value > checkOut.value) {
-        setValidCheckOut();
-      }
-    });
-
-    checkOut.addEventListener("change", () => {
-      setValidCheckOut();
-    });
-  </script>
-  <!-- The contents of myscript.js will be loaded inside the script tag -->
   {% endblock %}
 </div>
+{% block footer %} {% endblock %} {% block javascript %}
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='js/booking.js') }}"
+></script>
+
+<script>
+  const checkIn = $("#check-in");
+  const checkOut = $("#check-out");
+  checkIn.value = "{{ check_in  }}";
+  checkOut.value = "{{ check_out }}";
+
+  const minDate = new Date();
+  const maxDate = new Date();
+  checkIn.setAttribute(
+    "max",
+    `${maxDate.getFullYear()}-${format(maxDate.getMonth() + 2)}-${format(
+      maxDate.getDate()
+    )}`
+  );
+
+  checkIn.setAttribute(
+    "min",
+    `${minDate.getFullYear()}-${format(minDate.getMonth() + 1)}-${format(
+      minDate.getDate()
+    )}`
+  );
+
+  checkIn.addEventListener("change", () => {
+    if (checkIn.value > checkOut.value) {
+      setValidCheckOut();
+    }
+  });
+
+  checkOut.addEventListener("change", () => {
+    setValidCheckOut();
+  });
+</script>
+<!-- The contents of myscript.js will be loaded inside the script tag -->
+{% endblock %}

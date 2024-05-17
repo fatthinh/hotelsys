@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail, Message
 
-app = Flask(__name__, template_folder='./templates', static_folder='./static')
+app = Flask(__name__, static_folder='./static')
 
 app.secret_key = '890f32ff363679f635988bd8c7910afe41fb463937feafb39df5490489c4c171'
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:%s@localhost/bookingdb?charset=utf8mb4" % quote(

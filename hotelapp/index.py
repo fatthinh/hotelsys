@@ -39,6 +39,7 @@ def staff_booking():
     check_out = request.args.get(
         'check-out', (datetime.today().date() + timedelta(days=1)).strftime('%Y-%m-%d'))
     booking_id = request.args.get('booking-id', None)
+    template = 'staff/booking/booking.html'
 
     cart = session.get('cart')
 
@@ -59,18 +60,35 @@ def staff_booking():
         ).identity_num, "is_vietnamese": guest.get_guest().is_vietnamese, "room": guest.room_id} for guest in booking.guests]
         cart['booking_id'] = booking_id
         session['cart'] = cart
+        template = 'staff/booking/reservation.html'
+
+    if request.referrer.__contains__("reservations"):
+        template = 'staff/booking/reservation.html'
 
     room_types = dao.get_room_types()
-    return render_template('staff/booking.html', rooms=room_types, check_in=check_in, check_out=check_out)
+    return render_template(template, rooms=room_types, check_in=check_in, check_out=check_out)
 
 
-@app.route('/staff/checkout')
+@app.route('/staff/booking-checkout')
 @staffonly
 @login_required
-def staff_checkout():
+def staff_booking_checkout():
     rooms = dao.get_rooms()
     room_types = dao.get_room_types()
-    return render_template('staff/checkout.html', rooms=rooms, room_types=room_types)
+
+    template = 'staff/form/booking-checkout.html'
+    return render_template(template, rooms=rooms, room_types=room_types)
+
+
+@app.route('/staff/reservation-checkout')
+@staffonly
+@login_required
+def staff_reservation_checkout():
+    rooms = dao.get_rooms()
+    room_types = dao.get_room_types()
+
+    template = 'staff/form/reservation-checkout.html'
+    return render_template(template, rooms=rooms, room_types=room_types)
 
 
 @app.route('/staff/reservations')
@@ -316,6 +334,7 @@ def add_guest_info():
                       "room": room, "is_vietnamese": is_vietnamese})
 
     cart['guests'] = guests
+    print(cart)
     session['cart'] = cart
     return jsonify({})
 
