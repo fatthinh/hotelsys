@@ -243,7 +243,7 @@ def revenue_by_month(month=None, year=None):
     return statistics
 
 
-def get_num_days_in_month(month, year): # lấy ngày của tháng
+def get_num_days_in_month(month, year):  # lấy ngày của tháng
     if month in [4, 6, 9, 11]:
         return 30
     elif month == 2:
@@ -277,16 +277,20 @@ def room_utilization(month=None, year=None):
             extract('year', Reservation.check_in) == year
         ]
     else:
-        num_days_in_month = 365 if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0) else 364
+        num_days_in_month = 365 if (year % 4 == 0 and year % 100 != 0) or (
+            year % 400 == 0) else 364
         filter_criteria = [
             extract('year', Reservation.check_in) == year
         ]
 
     results = db.session.query(
         Room.name,
-        func.sum(func.datediff(Reservation.check_out, Reservation.check_in)).label('num_days_reserved')
+        func.sum(func.datediff(Reservation.check_out, Reservation.check_in)).label(
+            'num_days_reserved')
     ).outerjoin(
-        Reservation, Room.id == Reservation.room_id
+        reservation_room, Room.id == reservation_room.c.room_id
+    ).outerjoin(
+        Reservation, reservation_room.c.reservation_id == Reservation.id
     ).filter(
         *filter_criteria
     ).group_by(Room.name).all()

@@ -6,6 +6,7 @@ import dao
 import utils
 from decorators import loggedin, staffonly
 from datetime import datetime, timedelta
+from sqlalchemy import func
 
 
 @app.route('/')

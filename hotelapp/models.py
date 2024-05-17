@@ -270,11 +270,9 @@ class Reservation(BaseForm):
         expenses = 0
         booking_paid = 0
         if self.booking:
-            booking_invoice = Booking.query.get(
-                self.booking).invoice.status == InvoiceStatus.PAID
-            if booking_invoice:
-                booking_paid = booking_invoice.amount
-
+            booking = Booking.query.get_or_404(self.booking)
+            if booking.invoice.status == InvoiceStatus.PAID:
+                booking_paid = booking.invoice.amount
         for room in self.rooms:
             expenses += sum(expense['expense']
                             for expense in room.get_expense(self.id))
@@ -461,15 +459,15 @@ if __name__ == "__main__":
                 booking.add_room(room=room)
         insert_data(db, BookingGuest, 'booking-guest')
 
-        # insert_data(db, Reservation, "reservation")
-        # with open(f'data/reservation-room.json', encoding='utf-8') as f:
-        #     items = json.load(f)
-        #     for item in items:
-        #         reservation = Reservation.query.get_or_404(
-        #             item['reservation_id'])
-        #         room = Room.query.get_or_404(item['room_id'])
-        #         reservation.add_room(room=room)
-        # insert_data(db, ReservationGuest, 'reservation-guest')
+        insert_data(db, Reservation, "reservation")
+        with open(f'data/reservation-room.json', encoding='utf-8') as f:
+            items = json.load(f)
+            for item in items:
+                reservation = Reservation.query.get_or_404(
+                    item['reservation_id'])
+                room = Room.query.get_or_404(item['room_id'])
+                reservation.add_room(room=room)
+        insert_data(db, ReservationGuest, 'reservation-guest')
 
         with open(f'data/roomtype-policy.json', encoding='utf-8') as f:
             items = json.load(f)
@@ -481,8 +479,8 @@ if __name__ == "__main__":
         for booking in Booking.query.all():
             booking.create_invoice(2)
 
-        # for reservation in Reservation.query.all():
-        #     reservation.create_invoice(2)
+        for reservation in Reservation.query.all():
+            reservation.create_invoice(2)
         # for i in range(10):
         #     booking = Booking.query.get_or_404(i+1)
         #     for y in range(2):
